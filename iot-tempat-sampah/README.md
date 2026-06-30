@@ -74,4 +74,4 @@ Pilih board `NodeMCU 1.0 (ESP-12E Module)`, kemudian instal:
 
 Library `ESP8266WiFi`, `Servo`, dan `SoftwareSerial` tersedia bersama paket board ESP8266.
 
-Isi `WIFI_SSID`, `WIFI_PASSWORD`, `BOT_TOKEN`, dan `CHAT_ID` sebelum upload. Serial Monitor menggunakan 115200 baud.
+Salin `iot_tempat_sampah/secrets.example.h` menjadi `iot_tempat_sampah/secrets.h`, lalu isi data Wi-Fi dan Telegram di file `secrets.h` sebelum upload. File `secrets.h` sengaja tidak diupload ke GitHub. Serial Monitor menggunakan 115200 baud.

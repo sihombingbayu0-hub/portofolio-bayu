@@ -62,6 +62,6 @@ Format FAT32 dan buat:
 
 ## Pengaturan Telegram
 
-1. Isi `WIFI_SSID` dan `WIFI_PASSWORD`.
-2. Isi `BOT_TOKEN` dari BotFather dan `CHAT_ID` Telegram.
+1. Salin `test_ultrasonik_dfplayer_servo/secrets.example.h` menjadi `test_ultrasonik_dfplayer_servo/secrets.h`.
+2. Isi data Wi-Fi, `BOT_TOKEN` dari BotFather, dan `CHAT_ID` Telegram di file `secrets.h`.
 3. Instal library `UniversalTelegramBot`, `ArduinoJson`, dan `DFRobotDFPlayerMini`.

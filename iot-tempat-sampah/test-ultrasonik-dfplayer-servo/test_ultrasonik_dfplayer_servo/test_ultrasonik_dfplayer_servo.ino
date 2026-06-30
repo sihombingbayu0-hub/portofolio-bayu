@@ -4,12 +4,7 @@
 #include <Servo.h>
 #include <SoftwareSerial.h>
 #include <DFRobotDFPlayerMini.h>
-
-// Isi sebelum upload.
-const char* WIFI_SSID = "NAMA_WIFI";
-const char* WIFI_PASSWORD = "PASSWORD_WIFI";
-const char* BOT_TOKEN = "ISI_TOKEN_BOT_TELEGRAM";
-const char* CHAT_ID = "ISI_CHAT_ID_TELEGRAM";
+#include "secrets.h"
 
 // ================================================================
 // PIN NODEMCU ESP8266

@@ -37,7 +37,7 @@ Masukkan microSD sebelum menyalakan daya.
 
 ## Cara menguji
 
-1. Isi `WIFI_SSID`, `WIFI_PASSWORD`, `BOT_TOKEN`, dan `CHAT_ID` pada sketch.
+1. Salin `test_dfplayer_servo/secrets.example.h` menjadi `test_dfplayer_servo/secrets.h`, lalu isi data Wi-Fi dan Telegram di file `secrets.h`.
 2. Instal `UniversalTelegramBot`, `ArduinoJson`, dan `DFRobotDFPlayerMini`.
 3. Upload sketch dan buka Serial Monitor pada 115200 baud.
 4. Telegram menerima `sistem aktif` ketika Wi-Fi tersambung.
