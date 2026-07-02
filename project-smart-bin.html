@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Detail project Smart Bin Bayu Aditya Sihombing.">
+  <title>Smart Bin - Project Bayu</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <script>
+    (() => {
+      try {
+        if (localStorage.getItem("portfolio-theme") === "dark") {
+          document.documentElement.dataset.theme = "dark";
+        }
+      } catch (error) {}
+    })();
+  </script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="project-detail-page">
+  <header class="detail-header">
+    <a class="detail-brand" href="index.html#projects">BAS</a>
+    <nav aria-label="Navigasi detail project">
+      <button class="theme-toggle" type="button" data-theme-toggle aria-label="Aktifkan mode gelap" aria-pressed="false" title="Mode gelap">
+        <svg class="moon-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5 7 7 0 1 0 20.5 14.5Z"/></svg>
+        <svg class="sun-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="detail-nav-link" href="index.html#projects">Kembali</a>
+      <a class="detail-nav-link primary" href="https://github.com/sihombingbayu0-hub/portofolio-bayu/tree/main/iot-tempat-sampah" target="_blank" rel="noreferrer">GitHub Project</a>
+    </nav>
+  </header>
+
+  <main class="project-detail">
+    <section class="detail-hero">
+      <div class="detail-copy">
+        <span class="detail-kicker">IoT / Automation / Embedded System</span>
+        <h1>Smart Bin - Tempat Sampah Pintar</h1>
+        <p>Prototype tempat sampah otomatis yang membaca objek di depan tutup, memantau kapasitas sampah, memberi respons suara, dan mengirim notifikasi ketika tempat sampah penuh.</p>
+        <div class="detail-actions">
+          <a class="project-link primary" href="https://github.com/sihombingbayu0-hub/portofolio-bayu/tree/main/iot-tempat-sampah" target="_blank" rel="noreferrer">Buka GitHub</a>
+          <a class="project-link secondary" href="index.html#projects">Lihat Project Lain</a>
+        </div>
+      </div>
+
+      <div class="detail-visual">
+        <div class="detail-photo-grid">
+          <img src="iot-tempat-sampah/assets/foto/prototype-depan-terbuka.jpeg" alt="Prototype tempat sampah pintar dengan tutup terbuka">
+          <div class="detail-photo-stack">
+            <img src="iot-tempat-sampah/assets/foto/prototype-belakang-rangkaian.png" alt="Rangkaian komponen di belakang prototype">
+            <img src="iot-tempat-sampah/assets/foto/prototype-sensor-tutup.png" alt="Sensor ultrasonik pada tutup prototype">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="detail-section-grid">
+      <article class="detail-panel">
+        <h2>Ringkasan</h2>
+        <p>Project ini dibuat untuk membantu proses pembuangan sampah agar lebih higienis dan mudah dipantau. Sistem memakai sensor ultrasonik untuk mendeteksi orang dan kapasitas, lalu servo membuka tutup secara otomatis.</p>
+        <div class="detail-tech">
+          <span>NodeMCU ESP8266</span>
+          <span>Arduino IDE</span>
+          <span>HC-SR04</span>
+          <span>Servo Motor</span>
+          <span>DFPlayer Mini</span>
+          <span>Telegram Bot</span>
+        </div>
+      </article>
+
+      <div class="detail-card-grid">
+        <article class="detail-card">
+          <span>01</span>
+          <h3>Masalah</h3>
+          <p>Tempat sampah manual kurang higienis dan kapasitasnya sering tidak diketahui sampai sudah penuh.</p>
+        </article>
+        <article class="detail-card">
+          <span>02</span>
+          <h3>Solusi</h3>
+          <p>Tutup terbuka otomatis saat objek terdeteksi, lalu sistem memantau isi dan mengirim notifikasi.</p>
+        </article>
+        <article class="detail-card">
+          <span>03</span>
+          <h3>Cara Kerja</h3>
+          <p>Sensor membaca jarak, NodeMCU memproses data, servo bergerak, dan output suara diputar lewat DFPlayer.</p>
+        </article>
+        <article class="detail-card">
+          <span>04</span>
+          <h3>Hasil</h3>
+          <p>Prototype berjalan lokal dan dokumentasinya siap dibaca ulang melalui repository GitHub.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+  <script src="theme.js"></script>
+</body>
+</html>

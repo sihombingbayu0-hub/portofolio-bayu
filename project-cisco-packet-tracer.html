@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Detail project Cisco Packet Tracer Bayu Aditya Sihombing.">
+  <title>Cisco Packet Tracer - Project Bayu</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <script>
+    (() => {
+      try {
+        if (localStorage.getItem("portfolio-theme") === "dark") {
+          document.documentElement.dataset.theme = "dark";
+        }
+      } catch (error) {}
+    })();
+  </script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="project-detail-page">
+  <header class="detail-header">
+    <a class="detail-brand" href="index.html#projects">BAS</a>
+    <nav aria-label="Navigasi detail project">
+      <button class="theme-toggle" type="button" data-theme-toggle aria-label="Aktifkan mode gelap" aria-pressed="false" title="Mode gelap">
+        <svg class="moon-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5 7 7 0 1 0 20.5 14.5Z"/></svg>
+        <svg class="sun-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="detail-nav-link" href="index.html#projects">Kembali</a>
+      <a class="detail-nav-link primary" href="https://github.com/sihombingbayu0-hub/portofolio-bayu/tree/main/cisco-packet-tracer" target="_blank" rel="noreferrer">GitHub Project</a>
+    </nav>
+  </header>
+
+  <main class="project-detail">
+    <section class="detail-hero">
+      <div class="detail-copy">
+        <span class="detail-kicker">Network / Simulation / Cisco</span>
+        <h1>Simulasi Jaringan Cisco Packet Tracer</h1>
+        <p>Project simulasi jaringan untuk memahami topologi, pembagian IP, DHCP, switching, routing dasar, dan pengujian konektivitas antar perangkat.</p>
+        <div class="detail-actions">
+          <a class="project-link primary" href="https://github.com/sihombingbayu0-hub/portofolio-bayu/tree/main/cisco-packet-tracer" target="_blank" rel="noreferrer">Buka GitHub</a>
+          <a class="project-link secondary" href="index.html#projects">Lihat Project Lain</a>
+        </div>
+      </div>
+
+      <div class="detail-visual network-visual" aria-hidden="true">
+        <span class="node main"></span>
+        <span class="node one"></span>
+        <span class="node two"></span>
+        <span class="node three"></span>
+        <span class="line a"></span>
+        <span class="line b"></span>
+        <span class="line c"></span>
+      </div>
+    </section>
+
+    <section class="detail-section-grid">
+      <article class="detail-panel">
+        <h2>Ringkasan</h2>
+        <p>Simulasi ini dibuat untuk melatih alur perancangan jaringan dari topologi sampai validasi koneksi. Setiap perangkat diposisikan sesuai kebutuhan dasar jaringan kantor kecil.</p>
+        <ul class="detail-list">
+          <li>Mendesain topologi jaringan terstruktur.</li>
+          <li>Melakukan konfigurasi IPv4 dan DHCP.</li>
+          <li>Menguji koneksi dengan ping dan connectivity test.</li>
+        </ul>
+      </article>
+
+      <div class="detail-card-grid">
+        <article class="detail-card">
+          <span>01</span>
+          <h3>Topologi</h3>
+          <p>Menggunakan pendekatan star network agar perangkat mudah dipetakan dan diuji.</p>
+        </article>
+        <article class="detail-card">
+          <span>02</span>
+          <h3>Konfigurasi</h3>
+          <p>IP addressing, DHCP, router, switch, dan client dikonfigurasi agar saling terhubung.</p>
+        </article>
+        <article class="detail-card">
+          <span>03</span>
+          <h3>Pengujian</h3>
+          <p>Validasi dilakukan melalui ping dan pengecekan konektivitas antar perangkat.</p>
+        </article>
+        <article class="detail-card">
+          <span>04</span>
+          <h3>Dokumentasi</h3>
+          <p>Catatan project disimpan agar konfigurasi bisa dipelajari kembali lewat GitHub.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+  <script src="theme.js"></script>
+</body>
+</html>
