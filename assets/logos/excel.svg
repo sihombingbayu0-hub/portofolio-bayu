@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96" role="img" aria-labelledby="title desc">
+  <title id="title">Microsoft Excel</title>
+  <desc id="desc">Stylized green spreadsheet logo.</desc>
+  <rect width="96" height="96" rx="22" fill="#107c41"/>
+  <rect x="38" y="18" width="40" height="60" rx="8" fill="#21a366"/>
+  <path d="M48 28h24M48 42h24M48 56h24M48 70h24M58 20v56" stroke="#b8f1d0" stroke-width="3" stroke-linecap="round"/>
+  <rect x="18" y="27" width="35" height="42" rx="8" fill="#185c37"/>
+  <path d="m27 39 6 9 6-9h7l-9 13 10 14h-8l-6-10-7 10h-7l10-14-9-13h7Z" fill="#ffffff"/>
+</svg>

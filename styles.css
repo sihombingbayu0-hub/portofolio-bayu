@@ -346,6 +346,8 @@ svg {
 :root[data-theme="dark"] .hero-copy h1,
 :root[data-theme="dark"] .section-title h2,
 :root[data-theme="dark"] .skill-card h3,
+:root[data-theme="dark"] .software-heading h3,
+:root[data-theme="dark"] .software-card h4,
 :root[data-theme="dark"] .timeline h3,
 :root[data-theme="dark"] .project-content h3,
 :root[data-theme="dark"] .detail-copy h1,
@@ -685,6 +687,8 @@ svg {
 :root[data-theme="dark"] .story-block,
 :root[data-theme="dark"] .timeline,
 :root[data-theme="dark"] .skill-card,
+:root[data-theme="dark"] .software-panel,
+:root[data-theme="dark"] .software-card,
 :root[data-theme="dark"] .project-card,
 :root[data-theme="dark"] .detail-panel,
 :root[data-theme="dark"] .detail-card {
@@ -803,6 +807,91 @@ svg {
   background: #eaf3ff;
   font-size: 0.72rem;
   font-weight: 800;
+}
+
+.software-panel {
+  padding: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.56);
+  border-radius: 8px;
+  background: var(--panel-strong);
+  box-shadow: 0 18px 48px rgba(54, 63, 94, 0.12);
+  backdrop-filter: blur(18px);
+}
+
+.software-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.software-heading span {
+  color: var(--rose);
+  font-size: 0.76rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.software-heading h3 {
+  margin: 0;
+  color: #2b2d3f;
+  font-size: 1.45rem;
+  line-height: 1.15;
+}
+
+.software-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.software-card {
+  min-width: 0;
+  min-height: 168px;
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: 9px;
+  padding: 16px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.52);
+  text-align: center;
+}
+
+.software-card img {
+  width: 56px;
+  height: 56px;
+  padding: 7px;
+  border: 1px solid rgba(53, 103, 255, 0.1);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 10px 24px rgba(54, 63, 94, 0.1);
+}
+
+.software-card h4 {
+  margin: 2px 0 0;
+  color: #2b2d3f;
+  font-size: 0.92rem;
+  line-height: 1.15;
+}
+
+.software-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.76rem;
+  line-height: 1.4;
+}
+
+:root[data-theme="dark"] .software-card {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+:root[data-theme="dark"] .software-card img {
+  border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.24);
 }
 
 .timeline {
@@ -1159,6 +1248,10 @@ svg {
   .project-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  .software-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
 
 @media (max-width: 820px) {
@@ -1305,6 +1398,10 @@ svg {
     padding: 24px;
   }
 
+  .software-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
   .metric-grid {
     grid-template-columns: 1fr;
   }
@@ -1372,6 +1469,10 @@ svg {
   .skill-grid,
   .project-grid {
     grid-template-columns: 1fr;
+  }
+
+  .software-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .skill-card {
@@ -1958,6 +2059,8 @@ body.project-detail-page {
   .story-block,
   .timeline,
   .skill-card,
+  .software-panel,
+  .software-card,
   .project-card,
   .detail-panel,
   .detail-card {
@@ -1982,6 +2085,44 @@ body.project-detail-page {
 
   .skill-card {
     padding: 18px;
+  }
+
+  .software-panel {
+    padding: 18px;
+  }
+
+  .software-heading {
+    display: grid;
+    justify-content: start;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+
+  .software-heading h3 {
+    font-size: 1.2rem;
+  }
+
+  .software-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .software-card {
+    min-height: 148px;
+    padding: 14px 8px;
+  }
+
+  .software-card img {
+    width: 50px;
+    height: 50px;
+  }
+
+  .software-card h4 {
+    font-size: 0.86rem;
+  }
+
+  .software-card p {
+    font-size: 0.72rem;
   }
 
   .skill-card h3,
@@ -2058,6 +2199,7 @@ body.project-detail-page {
   .hero-description,
   .story-block p,
   .skill-card p,
+  .software-card p,
   .timeline p,
   .project-content p,
   .contact-layout p {

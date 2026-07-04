@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96" role="img" aria-labelledby="title desc">
+  <title id="title">Visual Studio Code</title>
+  <desc id="desc">Stylized blue code editor logo.</desc>
+  <rect width="96" height="96" rx="22" fill="#e9f5ff"/>
+  <path d="M67 16 36 42 21 31 13 39l15 14-15 14 8 8 15-11 31 26 16-7V23l-16-7Z" fill="#007acc"/>
+  <path d="M67 34 47 53l20 19V34Z" fill="#ffffff" opacity=".28"/>
+  <path d="M67 16v74l16-7V23l-16-7Z" fill="#0065a9"/>
+</svg>
