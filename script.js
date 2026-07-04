@@ -1,4 +1,5 @@
 const track = document.querySelector(".slides-track");
+const slider = document.querySelector(".slider");
 const slides = Array.from(document.querySelectorAll(".slide"));
 const slideLinks = Array.from(document.querySelectorAll("[data-slide-target]"));
 const navLinks = Array.from(document.querySelectorAll(".nav-link"));
@@ -14,6 +15,13 @@ let touchStartY = 0;
 
 const formatSlideNumber = (index) => String(index + 1).padStart(2, "0");
 
+const resetHorizontalScroll = () => {
+  if (slider) slider.scrollLeft = 0;
+  track.scrollLeft = 0;
+  document.documentElement.scrollLeft = 0;
+  document.body.scrollLeft = 0;
+};
+
 const setMenuOpen = (isOpen) => {
   navPanel.classList.toggle("open", isOpen);
   menuButton.classList.toggle("is-open", isOpen);
@@ -21,6 +29,7 @@ const setMenuOpen = (isOpen) => {
 };
 
 const updateActiveState = () => {
+  resetHorizontalScroll();
   track.style.transform = `translateX(-${currentIndex * 100}%)`;
   currentSlideLabel.textContent = formatSlideNumber(currentIndex);
 
@@ -33,6 +42,8 @@ const updateActiveState = () => {
       slide.scrollTop = 0;
     }
   });
+
+  requestAnimationFrame(resetHorizontalScroll);
 
   navLinks.forEach((link) => {
     link.classList.toggle("active", Number(link.dataset.slideTarget) === currentIndex);
@@ -112,5 +123,8 @@ track.addEventListener("touchend", (event) => {
 window.addEventListener("hashchange", () => {
   goToSlide(getSlideIndexFromHash(), false);
 });
+
+window.addEventListener("resize", resetHorizontalScroll);
+window.addEventListener("load", resetHorizontalScroll);
 
 goToSlide(getSlideIndexFromHash(), false);
