@@ -1,5 +1,7 @@
 #include <ESP8266WiFi.h>
+#include <ESP8266HTTPClient.h>
 #include <WiFiClientSecureBearSSL.h>
+#include <ArduinoJson.h>
 #include <UniversalTelegramBot.h>
 #include <Servo.h>
 #include <SoftwareSerial.h>
@@ -21,12 +23,15 @@ constexpr uint8_t DFPLAYER_TX = D3;
 constexpr float BATAS_ORANG_CM = 50.0;
 constexpr float BATAS_PENUH_CM = 10.0;
 constexpr float BATAS_KOSONG_KEMBALI_CM = 15.0;
+constexpr float JARAK_SAMPAH_KOSONG_CM = 30.0;
 
 constexpr int SUDUT_TUTUP = 90;
 constexpr int SUDUT_BUKA = 180;
 constexpr unsigned long JEDA_TUTUP_MS = 2000;
 constexpr unsigned long INTERVAL_SENSOR_MS = 250;
 constexpr unsigned long INTERVAL_WIFI_MS = 10000;
+constexpr unsigned long INTERVAL_FIREBASE_BACA_MS = 800;
+constexpr unsigned long INTERVAL_FIREBASE_KIRIM_MS = 2000;
 constexpr unsigned long JEDA_SUARA_MS = 3500;
 
 // /mp3/0001.mp3 = ada orang
@@ -37,6 +42,7 @@ constexpr uint8_t SUARA_SELESAI = 2;
 constexpr uint8_t SUARA_PENUH = 3;
 
 BearSSL::WiFiClientSecure secureClient;
+BearSSL::WiFiClientSecure firebaseClient;
 UniversalTelegramBot bot(BOT_TOKEN, secureClient);
 Servo servoTutup;
 SoftwareSerial dfSerial(DFPLAYER_RX, DFPLAYER_TX);
@@ -44,20 +50,27 @@ DFRobotDFPlayerMini dfPlayer;
 
 bool dfPlayerSiap = false;
 bool tutupTerbuka = false;
+bool suaraAktif = true;
 bool siklusBuangAktif = false;
 bool statusPenuh = false;
 bool wifiSebelumnyaTerhubung = false;
 bool notifikasiPenuhTertunda = false;
 bool notifikasiKosongTertunda = false;
 bool suaraPernahDiputar = false;
+bool firebaseTutupPernahDibaca = false;
+bool nilaiTutupFirebaseTerakhir = false;
 
 unsigned long terakhirOrangTerlihat = 0;
 unsigned long sensorTerakhir = 0;
 unsigned long wifiTerakhir = 0;
 unsigned long suaraTerakhir = 0;
+unsigned long firebaseBacaTerakhir = 0;
+unsigned long firebaseKirimTerakhir = 0;
 
 float jarakOrang = -1;
 float jarakSampah = -1;
+int kapasitasPersen = 0;
+String statusSuara = "Siap";
 
 constexpr uint8_t UKURAN_ANTRIAN_SUARA = 6;
 uint8_t antrianSuara[UKURAN_ANTRIAN_SUARA];
@@ -81,22 +94,243 @@ float bacaUltrasonik(uint8_t trigPin, uint8_t echoPin) {
 }
 
 void antrekanSuara(uint8_t nomor) {
-  if (!dfPlayerSiap || jumlahSuara >= UKURAN_ANTRIAN_SUARA) return;
+  if (!suaraAktif) {
+    statusSuara = "Suara Nonaktif";
+    return;
+  }
+  if (!dfPlayerSiap || jumlahSuara >= UKURAN_ANTRIAN_SUARA) {
+    statusSuara = "DFPlayer belum siap";
+    return;
+  }
   antrianSuara[ekorSuara] = nomor;
   ekorSuara = (ekorSuara + 1) % UKURAN_ANTRIAN_SUARA;
   jumlahSuara++;
 }
 
 void prosesAntrianSuara(unsigned long sekarang) {
-  if (!dfPlayerSiap || jumlahSuara == 0) return;
+  if (!dfPlayerSiap || jumlahSuara == 0) {
+    if (suaraAktif && suaraPernahDiputar &&
+        sekarang - suaraTerakhir >= JEDA_SUARA_MS &&
+        statusSuara != "Siap") {
+      statusSuara = "Siap";
+    }
+    return;
+  }
   if (suaraPernahDiputar && sekarang - suaraTerakhir < JEDA_SUARA_MS) return;
 
   uint8_t nomor = antrianSuara[kepalaSuara];
   kepalaSuara = (kepalaSuara + 1) % UKURAN_ANTRIAN_SUARA;
   jumlahSuara--;
   dfPlayer.playMp3Folder(nomor);
+  statusSuara = "Memutar suara " + String(nomor);
   suaraTerakhir = sekarang;
   suaraPernahDiputar = true;
+}
+
+int hitungKapasitasPersen() {
+  if (jarakSampah <= 0) return kapasitasPersen;
+
+  float rentang = JARAK_SAMPAH_KOSONG_CM - BATAS_PENUH_CM;
+  if (rentang <= 0) return kapasitasPersen;
+
+  float persen = ((JARAK_SAMPAH_KOSONG_CM - jarakSampah) / rentang) * 100.0f;
+  return constrain((int)round(persen), 0, 100);
+}
+
+const char* statusSampahFirebase() {
+  if (kapasitasPersen >= 80) return "Penuh";
+  if (kapasitasPersen >= 50) return "Sedang";
+  return "Kosong";
+}
+
+bool firebaseDikonfigurasi() {
+  return strlen(FIREBASE_DATABASE_URL) > 10;
+}
+
+String buatUrlFirebase(const char* path) {
+  String url = FIREBASE_DATABASE_URL;
+  url.trim();
+  if (url.endsWith("/")) {
+    url.remove(url.length() - 1);
+  }
+
+  url += "/";
+  url += path;
+  url += ".json";
+
+  if (strlen(FIREBASE_AUTH) > 0) {
+    url += "?auth=";
+    url += FIREBASE_AUTH;
+  }
+
+  return url;
+}
+
+bool firebasePatch(const char* path, const String& body) {
+  if (WiFi.status() != WL_CONNECTED || !firebaseDikonfigurasi()) return false;
+
+  HTTPClient http;
+  String url = buatUrlFirebase(path);
+
+  if (!http.begin(firebaseClient, url)) {
+    Serial.println("Firebase PATCH gagal: URL tidak valid.");
+    return false;
+  }
+
+  http.addHeader("Content-Type", "application/json");
+  int kode = http.sendRequest("PATCH", body);
+  bool berhasil = kode >= 200 && kode < 300;
+
+  if (!berhasil) {
+    Serial.print("Firebase PATCH gagal. HTTP ");
+    Serial.println(kode);
+  }
+
+  http.end();
+  return berhasil;
+}
+
+bool firebasePut(const char* path, const String& body) {
+  if (WiFi.status() != WL_CONNECTED || !firebaseDikonfigurasi()) return false;
+
+  HTTPClient http;
+  String url = buatUrlFirebase(path);
+
+  if (!http.begin(firebaseClient, url)) {
+    Serial.println("Firebase PUT gagal: URL tidak valid.");
+    return false;
+  }
+
+  http.addHeader("Content-Type", "application/json");
+  int kode = http.PUT(body);
+  bool berhasil = kode >= 200 && kode < 300;
+
+  if (!berhasil) {
+    Serial.print("Firebase PUT gagal. HTTP ");
+    Serial.println(kode);
+  }
+
+  http.end();
+  return berhasil;
+}
+
+bool firebaseGet(const char* path, String& payload) {
+  if (WiFi.status() != WL_CONNECTED || !firebaseDikonfigurasi()) return false;
+
+  HTTPClient http;
+  String url = buatUrlFirebase(path);
+
+  if (!http.begin(firebaseClient, url)) {
+    Serial.println("Firebase GET gagal: URL tidak valid.");
+    return false;
+  }
+
+  int kode = http.GET();
+  bool berhasil = kode >= 200 && kode < 300;
+
+  if (berhasil) {
+    payload = http.getString();
+  } else {
+    Serial.print("Firebase GET gagal. HTTP ");
+    Serial.println(kode);
+  }
+
+  http.end();
+  return berhasil;
+}
+
+void kirimDataKeFirebase() {
+  StaticJsonDocument<384> data;
+  data["kapasitas"] = kapasitasPersen;
+  data["jarakOrang"] = jarakOrang > 0 ? (int)round(jarakOrang) : 0;
+  data["statusSampah"] = statusSampahFirebase();
+  data["tutupTerbuka"] = tutupTerbuka;
+  data["suaraAktif"] = suaraAktif;
+  data["statusSuara"] = statusSuara;
+
+  String body;
+  serializeJson(data, body);
+
+  if (firebasePatch("smartbin", body)) {
+    nilaiTutupFirebaseTerakhir = tutupTerbuka;
+    firebaseTutupPernahDibaca = true;
+    Serial.println("Firebase: data sensor terkirim.");
+  }
+}
+
+void aturTutupDariAplikasi(bool buka) {
+  siklusBuangAktif = false;
+
+  if (buka) {
+    servoTutup.write(SUDUT_BUKA);
+    tutupTerbuka = true;
+    Serial.println("Firebase: perintah buka tutup diterima.");
+  } else {
+    servoTutup.write(SUDUT_TUTUP);
+    tutupTerbuka = false;
+    Serial.println("Firebase: perintah tutup diterima.");
+  }
+}
+
+void prosesPerintahFirebase() {
+  String payload;
+  if (!firebaseGet("smartbin", payload)) return;
+
+  StaticJsonDocument<768> data;
+  DeserializationError error = deserializeJson(data, payload);
+  if (error) {
+    Serial.println("Firebase: JSON smartbin tidak bisa dibaca.");
+    return;
+  }
+
+  if (data["suaraAktif"].is<bool>()) {
+    suaraAktif = data["suaraAktif"].as<bool>();
+    if (!suaraAktif) statusSuara = "Suara Nonaktif";
+  }
+
+  if (data["tutupTerbuka"].is<bool>()) {
+    bool nilaiTutup = data["tutupTerbuka"].as<bool>();
+
+    // Nilai ini dianggap sebagai perintah hanya saat berubah dari aplikasi.
+    if (!firebaseTutupPernahDibaca) {
+      nilaiTutupFirebaseTerakhir = nilaiTutup;
+      firebaseTutupPernahDibaca = true;
+    } else if (nilaiTutup != nilaiTutupFirebaseTerakhir) {
+      nilaiTutupFirebaseTerakhir = nilaiTutup;
+      aturTutupDariAplikasi(nilaiTutup);
+    }
+  }
+
+  int perintahSuara = data["perintahSuara"] | 0;
+  if (perintahSuara >= 1 && perintahSuara <= 3) {
+    antrekanSuara((uint8_t)perintahSuara);
+    firebasePut("smartbin/perintahSuara", "0");
+    Serial.print("Firebase: perintah suara diterima: ");
+    Serial.println(perintahSuara);
+  }
+}
+
+void prosesFirebase(unsigned long sekarang) {
+  if (WiFi.status() != WL_CONNECTED) return;
+
+  if (!firebaseDikonfigurasi()) {
+    static bool sudahPeringatkan = false;
+    if (!sudahPeringatkan) {
+      Serial.println("Firebase belum dikonfigurasi di secrets.h.");
+      sudahPeringatkan = true;
+    }
+    return;
+  }
+
+  if (sekarang - firebaseBacaTerakhir >= INTERVAL_FIREBASE_BACA_MS) {
+    firebaseBacaTerakhir = sekarang;
+    prosesPerintahFirebase();
+  }
+
+  if (sekarang - firebaseKirimTerakhir >= INTERVAL_FIREBASE_KIRIM_MS) {
+    firebaseKirimTerakhir = sekarang;
+    kirimDataKeFirebase();
+  }
 }
 
 bool kirimTelegram(const String& pesan) {
@@ -153,6 +387,7 @@ void prosesSensorOrang(unsigned long sekarang) {
       siklusBuangAktif = true;
       servoTutup.write(SUDUT_BUKA);
       tutupTerbuka = true;
+      nilaiTutupFirebaseTerakhir = true;
       antrekanSuara(SUARA_ADA_ORANG);
       Serial.println("Orang terdeteksi, tutup dibuka.");
     }
@@ -163,6 +398,7 @@ void prosesSensorOrang(unsigned long sekarang) {
       sekarang - terakhirOrangTerlihat >= JEDA_TUTUP_MS) {
     servoTutup.write(SUDUT_TUTUP);
     tutupTerbuka = false;
+    nilaiTutupFirebaseTerakhir = false;
     siklusBuangAktif = false;
     antrekanSuara(SUARA_SELESAI);
     Serial.println("Selesai membuang, tutup ditutup.");
@@ -171,8 +407,9 @@ void prosesSensorOrang(unsigned long sekarang) {
 
 void prosesKapasitasSampah() {
   if (jarakSampah <= 0) return;
+  kapasitasPersen = hitungKapasitasPersen();
 
-  if (!statusPenuh && jarakSampah < BATAS_PENUH_CM) {
+  if (!statusPenuh && kapasitasPersen >= 80) {
     statusPenuh = true;
     antrekanSuara(SUARA_PENUH);
     Serial.println("Tempat sampah penuh.");
@@ -183,7 +420,8 @@ void prosesKapasitasSampah() {
   }
 
   // Hysteresis mencegah pesan berulang ketika jarak berada dekat 10 cm.
-  if (statusPenuh && jarakSampah > BATAS_KOSONG_KEMBALI_CM) {
+  if (statusPenuh && kapasitasPersen < 50 &&
+      jarakSampah > BATAS_KOSONG_KEMBALI_CM) {
     statusPenuh = false;
     notifikasiPenuhTertunda = false;
     Serial.println("Tempat sampah kosong dan siap digunakan kembali.");
@@ -214,6 +452,7 @@ void setup() {
   }
 
   secureClient.setInsecure();
+  firebaseClient.setInsecure();
   mulaiKoneksiWiFi();
 }
 
@@ -221,6 +460,7 @@ void loop() {
   unsigned long sekarang = millis();
   prosesStatusWiFi(sekarang);
   prosesAntrianSuara(sekarang);
+  prosesFirebase(sekarang);
 
   if (sekarang - sensorTerakhir >= INTERVAL_SENSOR_MS) {
     sensorTerakhir = sekarang;
@@ -228,8 +468,11 @@ void loop() {
     delay(35);
     jarakSampah = bacaUltrasonik(TRIG_SAMPAH, ECHO_SAMPAH);
 
-    Serial.printf("Orang: %.1f cm | Sampah: %.1f cm | Penuh: %s\n",
-                  jarakOrang, jarakSampah, statusPenuh ? "YA" : "TIDAK");
+    kapasitasPersen = hitungKapasitasPersen();
+
+    Serial.printf("Orang: %.1f cm | Sampah: %.1f cm | Kapasitas: %d%% | Penuh: %s\n",
+                  jarakOrang, jarakSampah, kapasitasPersen,
+                  statusPenuh ? "YA" : "TIDAK");
     prosesSensorOrang(sekarang);
     prosesKapasitasSampah();
   }

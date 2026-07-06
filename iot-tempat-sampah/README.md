@@ -8,6 +8,9 @@
 - Telegram mengirim `sistem aktif` ketika Wi-Fi tersambung.
 - Telegram mengirim `tempat sampah penuh silahkan kosongkan` ketika penuh.
 - Setelah jarak kembali lebih dari 15 cm, Telegram mengirim `tempat sampah kosong siap di gunakan kembali`.
+- ESP8266 mengirim data sensor ke Firebase Realtime Database pada path `smartbin`.
+- Aplikasi HP dapat mengubah `smartbin/tutupTerbuka` untuk membuka atau menutup servo.
+- Aplikasi HP dapat mengubah `smartbin/perintahSuara` menjadi `1`, `2`, atau `3` untuk memutar DFPlayer Mini.
 - Sistem lokal tetap bekerja saat internet mati. Pesan sensor yang tertunda dikirim ketika Wi-Fi kembali.
 
 ## Foto Prototype
@@ -72,6 +75,52 @@ Pilih board `NodeMCU 1.0 (ESP-12E Module)`, kemudian instal:
 - `ArduinoJson`
 - `DFRobotDFPlayerMini`
 
-Library `ESP8266WiFi`, `Servo`, dan `SoftwareSerial` tersedia bersama paket board ESP8266.
+Library `ESP8266WiFi`, `ESP8266HTTPClient`, `Servo`, dan `SoftwareSerial` tersedia bersama paket board ESP8266.
 
-Salin `iot_tempat_sampah/secrets.example.h` menjadi `iot_tempat_sampah/secrets.h`, lalu isi data Wi-Fi dan Telegram di file `secrets.h` sebelum upload. File `secrets.h` sengaja tidak diupload ke GitHub. Serial Monitor menggunakan 115200 baud.
+Salin `iot_tempat_sampah/secrets.example.h` menjadi `iot_tempat_sampah/secrets.h`, lalu isi data Wi-Fi, Telegram, dan Firebase di file `secrets.h` sebelum upload. File `secrets.h` sengaja tidak diupload ke GitHub. Serial Monitor menggunakan 115200 baud.
+
+## Firebase Realtime Database
+
+Gunakan struktur data berikut:
+
+```json
+{
+  "smartbin": {
+    "kapasitas": 65,
+    "jarakOrang": 35,
+    "statusSampah": "Sedang",
+    "tutupTerbuka": false,
+    "suaraAktif": true,
+    "perintahSuara": 0,
+    "statusSuara": "Siap"
+  }
+}
+```
+
+Path yang dikirim ESP8266:
+
+- `smartbin/kapasitas`
+- `smartbin/jarakOrang`
+- `smartbin/statusSampah`
+- `smartbin/tutupTerbuka`
+- `smartbin/suaraAktif`
+- `smartbin/statusSuara`
+
+Path yang dibaca ESP8266 dari aplikasi HP:
+
+- `smartbin/tutupTerbuka`
+- `smartbin/suaraAktif`
+- `smartbin/perintahSuara`
+
+Untuk uji coba awal, rules Realtime Database dapat dibuat terbuka sementara:
+
+```json
+{
+  "rules": {
+    ".read": true,
+    ".write": true
+  }
+}
+```
+
+Setelah proyek berjalan, rules harus diamankan kembali.
