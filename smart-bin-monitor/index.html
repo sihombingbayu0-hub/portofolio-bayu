@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f7f54">
+  <meta name="description" content="Aplikasi monitoring tempat sampah pintar berbasis IoT.">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <title>Smart Bin Monitor</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app-shell">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Monitoring IoT</p>
+        <h1>Smart Bin Monitor</h1>
+        <p class="subtitle">Pantau kondisi tempat sampah pintar langsung dari HP.</p>
+      </div>
+
+      <div class="connection-pill" id="connectionStatus" aria-live="polite">
+        <span class="pulse"></span>
+        Simulasi aktif
+      </div>
+    </section>
+
+    <section class="warning-card hidden" id="warningCard" aria-live="polite">
+      <strong>Sampah Sudah Penuh</strong>
+      <span>Segera kosongkan tempat sampah.</span>
+    </section>
+
+    <section class="bin-panel" aria-label="Status tempat sampah pintar">
+      <div class="bin-visual" aria-hidden="true">
+        <div class="bin-lid" id="binLid"></div>
+        <div class="bin-body">
+          <div class="bin-fill" id="binFill"></div>
+          <div class="bin-shine"></div>
+        </div>
+      </div>
+
+      <div class="status-summary">
+        <span class="status-label">Status Sampah</span>
+        <strong id="statusSampah">Sedang</strong>
+        <p id="statusDescription">Kapasitas masih aman untuk digunakan.</p>
+      </div>
+    </section>
+
+    <section class="capacity-card" id="capacityCard">
+      <div class="card-header">
+        <span>Kapasitas Sampah</span>
+        <strong id="kapasitasText">65%</strong>
+      </div>
+
+      <div class="progress-track" aria-label="Kapasitas sampah">
+        <div class="progress-bar" id="capacityBar"></div>
+      </div>
+
+      <div class="capacity-meta">
+        <span>Level kapasitas</span>
+        <strong id="capacityLevel">Sedang</strong>
+      </div>
+    </section>
+
+    <section class="info-grid">
+      <article class="info-card">
+        <span class="info-title">Jarak Orang</span>
+        <strong><span id="jarakOrang">35</span> cm</strong>
+        <small>Sensor ultrasonik</small>
+      </article>
+
+      <article class="info-card">
+        <span class="info-title">Status Tutup</span>
+        <strong id="statusTutup">Tertutup</strong>
+        <small>Servo motor</small>
+      </article>
+
+      <article class="info-card">
+        <span class="info-title">Status Suara</span>
+        <strong id="statusSuara">Siap</strong>
+        <small>DFPlayer Mini</small>
+      </article>
+
+      <article class="info-card">
+        <span class="info-title">Mode Suara</span>
+        <strong id="suaraAktifStatus">Aktif</strong>
+        <small>Perintah terakhir: <span id="perintahSuara">0</span></small>
+      </article>
+    </section>
+
+    <section class="action-panel">
+      <button class="primary-button" id="toggleLidButton" type="button">
+        <span class="button-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" role="img">
+            <path d="M5 8h14M8 8V6.8C8 5.8 8.8 5 9.8 5h4.4c1 0 1.8.8 1.8 1.8V8m-9 0 1 11h8l1-11" />
+          </svg>
+        </span>
+        Buka Tutup
+      </button>
+
+      <button class="secondary-button" id="refreshButton" type="button">
+        <span class="button-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" role="img">
+            <path d="M20 11a8 8 0 0 0-14.9-4M4 5v5h5m-5 3a8 8 0 0 0 14.9 4M20 19v-5h-5" />
+          </svg>
+        </span>
+        Cek Status
+      </button>
+    </section>
+
+    <section class="sound-panel" aria-label="Kontrol suara DFPlayer Mini">
+      <div class="panel-header">
+        <span>Kontrol DFPlayer Mini</span>
+        <strong id="soundMode">Suara Aktif</strong>
+      </div>
+
+      <div class="sound-buttons">
+        <button class="secondary-button" type="button" data-sound-command="1">
+          <span class="button-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" role="img">
+              <path d="M11 5 6 9H3v6h3l5 4V5Zm5 4a5 5 0 0 1 0 6m3-9a9 9 0 0 1 0 12" />
+            </svg>
+          </span>
+          Tes Suara 1
+        </button>
+
+        <button class="secondary-button" type="button" data-sound-command="2">
+          <span class="button-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" role="img">
+              <path d="M11 5 6 9H3v6h3l5 4V5Zm5 4a5 5 0 0 1 0 6m3-9a9 9 0 0 1 0 12" />
+            </svg>
+          </span>
+          Tes Suara 2
+        </button>
+
+        <button class="secondary-button" type="button" data-sound-command="3">
+          <span class="button-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" role="img">
+              <path d="M11 5 6 9H3v6h3l5 4V5Zm5 4a5 5 0 0 1 0 6m3-9a9 9 0 0 1 0 12" />
+            </svg>
+          </span>
+          Tes Suara 3
+        </button>
+
+        <button class="primary-button sound-toggle" id="toggleSoundButton" type="button">
+          <span class="button-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" role="img">
+              <path d="M12 6v12m-5-9v6m10-7v8M4 11v2m16-3v4" />
+            </svg>
+          </span>
+          Aktif / Nonaktif Suara
+        </button>
+      </div>
+    </section>
+
+    <p class="last-update" id="lastUpdate">Data dummy siap digunakan.</p>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Smart Bin Monitor">
+  <rect width="512" height="512" rx="112" fill="#0f7f54"/>
+  <circle cx="392" cy="120" r="44" fill="#f5b942"/>
+  <path d="M155 175h202" stroke="#ffffff" stroke-width="28" stroke-linecap="round"/>
+  <path d="M196 175v-32c0-18 15-33 33-33h54c18 0 33 15 33 33v32" fill="none" stroke="#ffffff" stroke-width="24" stroke-linecap="round"/>
+  <path d="M178 205h156l-17 199c-2 24-22 42-46 42h-30c-24 0-44-18-46-42l-17-199Z" fill="#eef6f3"/>
+  <path d="M214 242v148M256 242v148M298 242v148" stroke="#0f7f54" stroke-width="18" stroke-linecap="round"/>
+  <path d="M178 312h156l-8 92c-2 24-23 42-46 42h-48c-23 0-44-18-46-42l-8-92Z" fill="#17a96b"/>
+</svg>
