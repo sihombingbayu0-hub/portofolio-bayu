@@ -4,7 +4,7 @@
 
 - Ultrasonik 1 membuka tutup saat orang berjarak kurang dari 50 cm.
 - DFPlayer memutar suara 1 saat orang datang, suara 2 setelah selesai, dan suara 3 saat penuh.
-- Ultrasonik 2 menyatakan penuh jika jarak sampah kurang dari 10 cm.
+- Ultrasonik 2 menyatakan penuh jika jarak sampah sekitar 4 cm.
 - ESP8266 mengirim data sensor ke Firebase Realtime Database pada path `smartbin`.
 - Aplikasi HP dapat mengubah `smartbin/tutupTerbuka` untuk membuka atau menutup servo.
 - Aplikasi HP juga mengirim perintah servo lewat `smartbin/perintahTutup` agar perintah tidak tertimpa data sensor.
@@ -30,19 +30,21 @@
 
 | Perangkat | Pin perangkat | NodeMCU ESP8266 |
 |---|---|---|
-| Ultrasonik 1 | TRIG | D1 |
-| Ultrasonik 1 | ECHO | D2 melalui pembagi tegangan |
-| Ultrasonik 2 | TRIG | D7 |
-| Ultrasonik 2 | ECHO | D5 melalui pembagi tegangan |
+| Ultrasonik 1 | TRIG | D7 |
+| Ultrasonik 1 | ECHO | D5 melalui pembagi tegangan |
+| Ultrasonik 2 | TRIG | D0 |
+| Ultrasonik 2 | ECHO | D8 melalui pembagi tegangan |
 | Servo | Signal | D6 |
-| DFPlayer Mini | TX | D4 |
-| DFPlayer Mini | RX | D3 melalui resistor 1 kOhm |
+| DFPlayer Mini | TX | D2 |
+| DFPlayer Mini | RX | D1 melalui resistor 1 kOhm |
 
-Kabel serial disilang: TX DFPlayer menuju D4 (RX ESP8266), sedangkan RX DFPlayer menerima dari D3 (TX ESP8266).
+Kabel serial disilang: TX DFPlayer menuju D2 (RX ESP8266), sedangkan RX DFPlayer menerima dari D1 (TX ESP8266).
 
-> D3/GPIO0 dan D4/GPIO2 adalah pin boot. Jika board gagal boot atau gagal di-upload, lepaskan sementara kabel DFPlayer dari D3 dan D4. Pasang kembali setelah upload, lalu restart.
+> D8/GPIO15 adalah pin boot dan harus LOW saat ESP8266 menyala. Jika board gagal boot atau gagal di-upload, lepaskan sementara kabel ECHO ultrasonik 2 dari D8. Pasang kembali setelah upload, lalu restart.
 
 Kedua pin ECHO HC-SR04 menghasilkan 5 V. Gunakan pembagi tegangan, misalnya 1 kOhm dan 2 kOhm, agar sinyal menjadi sekitar 3,3 V.
+
+Kalibrasi kapasitas sampah pada sketch memakai jarak kosong 16 cm dan jarak penuh 4 cm. Jika ukuran tempat sampah berubah, sesuaikan `JARAK_SAMPAH_KOSONG_CM` dan `BATAS_PENUH_CM`.
 
 ## Adaptor 5 V
 
@@ -52,7 +54,7 @@ Kedua pin ECHO HC-SR04 menghasilkan 5 V. Gunakan pembagi tegangan, misalnya 1 kO
 - Gunakan adaptor minimal 5 V 2 A agar tegangan tidak turun saat servo bergerak dan DFPlayer berbunyi.
 - Tambahkan kapasitor elektrolit 470-1000 uF di jalur 5 V dekat servo untuk membantu mencegah ESP8266 restart saat servo mulai bergerak.
 
-Servo bergerak dari 10 derajat saat tertutup ke 60 derajat saat terbuka. Jika arah mekaniknya terbalik, tukar nilai `SUDUT_TUTUP` dan `SUDUT_BUKA` pada sketch.
+Servo bergerak perlahan dari 165 derajat saat tertutup ke 75 derajat saat terbuka. Jika ingin lebih lambat, naikkan nilai `JEDA_SERVO_PER_DERAJAT_MS` pada sketch. Jika arah mekaniknya terbalik, tukar nilai `SUDUT_TUTUP` dan `SUDUT_BUKA`.
 
 ## File suara
 
@@ -65,6 +67,8 @@ Format microSD sebagai FAT32 dan buat folder `mp3`:
 ```
 
 Jika audio lebih panjang dari 3,5 detik, naikkan `JEDA_SUARA_MS` pada sketch.
+
+Saat ESP8266 menyala, sketch akan mencoba tes `0001.mp3` jika `TES_SUARA_SAAT_NYALA` bernilai `true`. Jika Serial Monitor menampilkan `DFPlayer siap` dan `DFPlayer: memutar /mp3/0001.mp3` tetapi speaker tetap diam, periksa speaker, volume, microSD FAT32, nama folder `mp3`, dan nama file `0001.mp3`. Jika Serial Monitor menampilkan `DFPlayer tidak terdeteksi`, periksa ulang kabel TX/RX, VCC 5 V, dan GND bersama.
 
 ## Library Arduino IDE
 
@@ -84,9 +88,10 @@ Gunakan struktur data berikut:
 ```json
 {
   "smartbin": {
-    "kapasitas": 65,
+    "kapasitas": 0,
     "jarakOrang": 35,
-    "statusSampah": "Sedang",
+    "jarakSampah": 16,
+    "statusSampah": "Kosong",
     "tutupTerbuka": false,
     "perintahTutup": null,
     "suaraAktif": true,
@@ -100,6 +105,7 @@ Path yang dikirim ESP8266:
 
 - `smartbin/kapasitas`
 - `smartbin/jarakOrang`
+- `smartbin/jarakSampah`
 - `smartbin/statusSampah`
 - `smartbin/tutupTerbuka`
 - `smartbin/suaraAktif`

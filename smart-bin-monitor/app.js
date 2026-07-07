@@ -8,11 +8,14 @@
 const FIREBASE_DATABASE_URL = "https://smart-bin-monitor-6f0e1-default-rtdb.firebaseio.com";
 const FIREBASE_AUTH = "";
 const INTERVAL_FIREBASE_MS = 1500;
+const JARAK_SAMPAH_KOSONG_CM = 16;
+const BATAS_SAMPAH_PENUH_CM = 4;
 
 // Semua path Firebase dikumpulkan di sini agar mudah dicari dan diganti.
 const pathFirebase = {
   kapasitas: "smartbin/kapasitas",
   jarakOrang: "smartbin/jarakOrang",
+  jarakSampah: "smartbin/jarakSampah",
   statusSampah: "smartbin/statusSampah",
   tutupTerbuka: "smartbin/tutupTerbuka",
   perintahTutup: "smartbin/perintahTutup",
@@ -23,9 +26,10 @@ const pathFirebase = {
 
 // Data awal dipakai agar tampilan tidak kosong sebelum Firebase berhasil terhubung.
 let dataTempatSampah = {
-  kapasitas: 65,
+  kapasitas: 0,
   jarakOrang: 35,
-  statusSampah: "Sedang",
+  jarakSampah: 16,
+  statusSampah: "Kosong",
   tutupTerbuka: false,
   suaraAktif: true,
   perintahSuara: 0,
@@ -46,6 +50,7 @@ const binLid = document.getElementById("binLid");
 const statusSampah = document.getElementById("statusSampah");
 const statusDescription = document.getElementById("statusDescription");
 const jarakOrang = document.getElementById("jarakOrang");
+const jarakSampah = document.getElementById("jarakSampah");
 const statusTutup = document.getElementById("statusTutup");
 const statusSuara = document.getElementById("statusSuara");
 const suaraAktifStatus = document.getElementById("suaraAktifStatus");
@@ -122,12 +127,26 @@ function batasiKapasitas(nilai) {
   return Math.min(Math.max(Math.round(angka), 0), 100);
 }
 
+// Menghitung kapasitas dari jarak sensor sampah jika data kapasitas belum tersedia.
+function hitungKapasitasDariJarakSampah(jarak) {
+  const angka = Number(jarak);
+
+  if (!Number.isFinite(angka) || angka <= 0) {
+    return dataTempatSampah.kapasitas;
+  }
+
+  const rentang = JARAK_SAMPAH_KOSONG_CM - BATAS_SAMPAH_PENUH_CM;
+  const persen = ((JARAK_SAMPAH_KOSONG_CM - angka) / rentang) * 100;
+
+  return Math.min(Math.max(Math.round(persen), 0), 100);
+}
+
 // Mengubah nilai jarak dari Firebase menjadi angka aman untuk ditampilkan.
-function bersihkanJarak(nilai) {
+function bersihkanJarak(nilai, nilaiCadangan) {
   const angka = Number(nilai);
 
   if (!Number.isFinite(angka)) {
-    return dataTempatSampah.jarakOrang;
+    return nilaiCadangan;
   }
 
   return Math.max(Math.round(angka), 0);
@@ -230,6 +249,7 @@ function tampilkanData(pesanTambahan) {
   statusDescription.textContent = buatDeskripsiStatus(dataTempatSampah.kapasitas);
 
   jarakOrang.textContent = dataTempatSampah.jarakOrang;
+  jarakSampah.textContent = dataTempatSampah.jarakSampah;
   statusTutup.textContent = dataTempatSampah.tutupTerbuka ? "Terbuka" : "Tertutup";
   statusSuara.textContent = statusSuaraTampil;
   suaraAktifStatus.textContent = dataTempatSampah.suaraAktif ? "Aktif" : "Nonaktif";
@@ -289,8 +309,11 @@ async function mintaFirebase(path, method, nilai) {
 
 // Menyalin data dari Firebase ke variabel aplikasi sebelum ditampilkan.
 function terapkanDataFirebase(data) {
-  dataTempatSampah.kapasitas = batasiKapasitas(data.kapasitas);
-  dataTempatSampah.jarakOrang = bersihkanJarak(data.jarakOrang);
+  dataTempatSampah.jarakOrang = bersihkanJarak(data.jarakOrang, dataTempatSampah.jarakOrang);
+  dataTempatSampah.jarakSampah = bersihkanJarak(data.jarakSampah, dataTempatSampah.jarakSampah);
+  dataTempatSampah.kapasitas = Number.isFinite(Number(data.kapasitas))
+    ? batasiKapasitas(data.kapasitas)
+    : hitungKapasitasDariJarakSampah(dataTempatSampah.jarakSampah);
   dataTempatSampah.statusSampah = bersihkanTeks(data.statusSampah, tentukanStatusSampah(dataTempatSampah.kapasitas));
   dataTempatSampah.tutupTerbuka = bersihkanBoolean(data.tutupTerbuka, dataTempatSampah.tutupTerbuka);
   dataTempatSampah.suaraAktif = bersihkanBoolean(data.suaraAktif, dataTempatSampah.suaraAktif);
@@ -341,11 +364,13 @@ async function cekStatusDariFirebase() {
 
 // Fungsi simulasi tetap dipakai jika konfigurasi Firebase belum diisi.
 function cekStatusSimulasi() {
-  const kapasitasSimulasi = Math.floor(Math.random() * 101);
+  const jarakSampahSimulasi = Math.floor(Math.random() * (JARAK_SAMPAH_KOSONG_CM - BATAS_SAMPAH_PENUH_CM + 1)) + BATAS_SAMPAH_PENUH_CM;
+  const kapasitasSimulasi = hitungKapasitasDariJarakSampah(jarakSampahSimulasi);
   const jarakSimulasi = Math.floor(Math.random() * 81) + 10;
 
   dataTempatSampah.kapasitas = kapasitasSimulasi;
   dataTempatSampah.jarakOrang = jarakSimulasi;
+  dataTempatSampah.jarakSampah = jarakSampahSimulasi;
   dataTempatSampah.statusSuara = dataTempatSampah.suaraAktif ? "Simulasi siap" : "Suara Nonaktif";
 
   tampilkanData("Data simulasi diperbarui");

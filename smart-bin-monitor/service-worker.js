@@ -1,4 +1,4 @@
-const CACHE_NAME = "smart-bin-monitor-v3";
+const CACHE_NAME = "smart-bin-monitor-v4";
 
 // File lokal yang disimpan agar aplikasi bisa dibuka lebih cepat dan tetap tampil offline.
 const CACHE_ASSETS = [

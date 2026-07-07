@@ -23,24 +23,25 @@ static const char* FIREBASE_AUTH = "";
 // ========================================================================
 
 // Pemetaan pin NodeMCU ESP8266.
-constexpr uint8_t TRIG_ORANG = D1;
-constexpr uint8_t ECHO_ORANG = D2;
-constexpr uint8_t TRIG_SAMPAH = D7;
-constexpr uint8_t ECHO_SAMPAH = D5;
+constexpr uint8_t TRIG_ORANG = D7;
+constexpr uint8_t ECHO_ORANG = D5;
+constexpr uint8_t TRIG_SAMPAH = D0;
+constexpr uint8_t ECHO_SAMPAH = D8;
 constexpr uint8_t PIN_SERVO = D6;
 
 // SoftwareSerial berurutan (RX, TX):
-// TX DFPlayer -> D4 dan RX DFPlayer <- D3 melalui resistor 1 kOhm.
-constexpr uint8_t DFPLAYER_RX = D4;
-constexpr uint8_t DFPLAYER_TX = D3;
+// TX DFPlayer -> D2 dan RX DFPlayer <- D1 melalui resistor 1 kOhm.
+constexpr uint8_t DFPLAYER_RX = D2;
+constexpr uint8_t DFPLAYER_TX = D1;
 
 constexpr float BATAS_ORANG_CM = 50.0;
-constexpr float BATAS_PENUH_CM = 10.0;
-constexpr float BATAS_KOSONG_KEMBALI_CM = 15.0;
-constexpr float JARAK_SAMPAH_KOSONG_CM = 30.0;
+constexpr float BATAS_PENUH_CM = 4.0;
+constexpr float BATAS_KOSONG_KEMBALI_CM = 10.0;
+constexpr float JARAK_SAMPAH_KOSONG_CM = 16.0;
 
 constexpr int SUDUT_TUTUP = 165;
 constexpr int SUDUT_BUKA = 75;
+constexpr int JEDA_SERVO_PER_DERAJAT_MS = 25;
 constexpr unsigned long JEDA_TUTUP_MS = 2000;
 constexpr unsigned long INTERVAL_SENSOR_MS = 250;
 constexpr unsigned long INTERVAL_WIFI_MS = 10000;
@@ -54,6 +55,7 @@ constexpr unsigned long JEDA_SUARA_MS = 3500;
 constexpr uint8_t SUARA_ADA_ORANG = 1;
 constexpr uint8_t SUARA_SELESAI = 2;
 constexpr uint8_t SUARA_PENUH = 3;
+constexpr bool TES_SUARA_SAAT_NYALA = true;
 
 BearSSL::WiFiClientSecure firebaseClient;
 Servo servoTutup;
@@ -80,6 +82,7 @@ unsigned long firebaseKirimTerakhir = 0;
 float jarakOrang = -1;
 float jarakSampah = -1;
 int kapasitasPersen = 0;
+int sudutServoSaatIni = SUDUT_TUTUP;
 String statusSuara = "Siap";
 
 constexpr uint8_t UKURAN_ANTRIAN_SUARA = 6;
@@ -87,6 +90,20 @@ uint8_t antrianSuara[UKURAN_ANTRIAN_SUARA];
 uint8_t kepalaSuara = 0;
 uint8_t ekorSuara = 0;
 uint8_t jumlahSuara = 0;
+
+void gerakkanServoPerlahan(int sudutTujuan) {
+  sudutTujuan = constrain(sudutTujuan, 0, 180);
+  if (sudutServoSaatIni == sudutTujuan) return;
+
+  int arah = sudutTujuan > sudutServoSaatIni ? 1 : -1;
+
+  while (sudutServoSaatIni != sudutTujuan) {
+    sudutServoSaatIni += arah;
+    servoTutup.write(sudutServoSaatIni);
+    delay(JEDA_SERVO_PER_DERAJAT_MS);
+    yield();
+  }
+}
 
 float bacaUltrasonik(uint8_t trigPin, uint8_t echoPin) {
   digitalWrite(trigPin, LOW);
@@ -133,6 +150,9 @@ void prosesAntrianSuara(unsigned long sekarang) {
   jumlahSuara--;
   dfPlayer.playMp3Folder(nomor);
   statusSuara = "Memutar suara " + String(nomor);
+  Serial.print("DFPlayer: memutar /mp3/000");
+  Serial.print(nomor);
+  Serial.println(".mp3");
   suaraTerakhir = sekarang;
   suaraPernahDiputar = true;
 }
@@ -250,9 +270,10 @@ bool firebaseGet(const char* path, String& payload) {
 }
 
 void kirimDataKeFirebase() {
-  StaticJsonDocument<384> data;
+  StaticJsonDocument<512> data;
   data["kapasitas"] = kapasitasPersen;
   data["jarakOrang"] = jarakOrang > 0 ? (int)round(jarakOrang) : 0;
+  data["jarakSampah"] = jarakSampah > 0 ? (int)round(jarakSampah) : 0;
   data["statusSampah"] = statusSampahFirebase();
   data["tutupTerbuka"] = tutupTerbuka;
   data["suaraAktif"] = suaraAktif;
@@ -272,11 +293,11 @@ void aturTutupDariAplikasi(bool buka) {
   siklusBuangAktif = false;
 
   if (buka) {
-    servoTutup.write(SUDUT_BUKA);
+    gerakkanServoPerlahan(SUDUT_BUKA);
     tutupTerbuka = true;
     Serial.println("Firebase: perintah buka tutup diterima.");
   } else {
-    servoTutup.write(SUDUT_TUTUP);
+    gerakkanServoPerlahan(SUDUT_TUTUP);
     tutupTerbuka = false;
     Serial.println("Firebase: perintah tutup diterima.");
   }
@@ -387,7 +408,7 @@ void prosesSensorOrang(unsigned long sekarang) {
     terakhirOrangTerlihat = sekarang;
     if (!siklusBuangAktif) {
       siklusBuangAktif = true;
-      servoTutup.write(SUDUT_BUKA);
+      gerakkanServoPerlahan(SUDUT_BUKA);
       tutupTerbuka = true;
       nilaiTutupFirebaseTerakhir = true;
       antrekanSuara(SUARA_ADA_ORANG);
@@ -398,7 +419,7 @@ void prosesSensorOrang(unsigned long sekarang) {
 
   if (siklusBuangAktif &&
       sekarang - terakhirOrangTerlihat >= JEDA_TUTUP_MS) {
-    servoTutup.write(SUDUT_TUTUP);
+    gerakkanServoPerlahan(SUDUT_TUTUP);
     tutupTerbuka = false;
     nilaiTutupFirebaseTerakhir = false;
     siklusBuangAktif = false;
@@ -434,13 +455,24 @@ void setup() {
 
   servoTutup.attach(PIN_SERVO, 500, 2400);
   servoTutup.write(SUDUT_TUTUP);
+  sudutServoSaatIni = SUDUT_TUTUP;
 
   dfSerial.begin(9600);
+  delay(1200);
   if (dfPlayer.begin(dfSerial, true, true)) {
     dfPlayerSiap = true;
-    dfPlayer.volume(24);
+    dfPlayer.outputDevice(DFPLAYER_DEVICE_SD);
+    delay(200);
+    dfPlayer.volume(30);
+    statusSuara = "DFPlayer siap";
     Serial.println("DFPlayer siap.");
+
+    if (TES_SUARA_SAAT_NYALA) {
+      antrekanSuara(SUARA_ADA_ORANG);
+      Serial.println("DFPlayer: tes suara 1 dijadwalkan.");
+    }
   } else {
+    statusSuara = "DFPlayer belum siap";
     Serial.println("DFPlayer tidak terdeteksi. Periksa kabel dan microSD.");
   }
 
