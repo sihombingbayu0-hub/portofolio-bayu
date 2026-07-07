@@ -2,11 +2,25 @@
 #include <ESP8266HTTPClient.h>
 #include <WiFiClientSecureBearSSL.h>
 #include <ArduinoJson.h>
-#include <UniversalTelegramBot.h>
 #include <Servo.h>
 #include <SoftwareSerial.h>
 #include <DFRobotDFPlayerMini.h>
-#include "secrets.h"
+
+// ===================== KONFIGURASI WIFI DAN FIREBASE =====================
+// Ganti nilai di bawah ini dengan data milik kamu sebelum upload ke ESP8266.
+// Karena semua konfigurasi ada di file ini, sketch tidak perlu file tambahan.
+static const char* WIFI_SSID = "ehe";
+static const char* WIFI_PASSWORD = "pesandulu";
+
+// Contoh URL:
+// https://nama-project-default-rtdb.firebaseio.com
+// https://nama-project-default-rtdb.asia-southeast1.firebasedatabase.app
+static const char* FIREBASE_DATABASE_URL = "https://smart-bin-monitor-6f0e1-default-rtdb.firebaseio.com";
+
+// Kosongkan jika rules Firebase masih terbuka untuk uji coba.
+// Jika memakai token/database secret, isi token di sini.
+static const char* FIREBASE_AUTH = "";
+// ========================================================================
 
 // Pemetaan pin NodeMCU ESP8266.
 constexpr uint8_t TRIG_ORANG = D1;
@@ -25,8 +39,8 @@ constexpr float BATAS_PENUH_CM = 10.0;
 constexpr float BATAS_KOSONG_KEMBALI_CM = 15.0;
 constexpr float JARAK_SAMPAH_KOSONG_CM = 30.0;
 
-constexpr int SUDUT_TUTUP = 90;
-constexpr int SUDUT_BUKA = 180;
+constexpr int SUDUT_TUTUP = 165;
+constexpr int SUDUT_BUKA = 75;
 constexpr unsigned long JEDA_TUTUP_MS = 2000;
 constexpr unsigned long INTERVAL_SENSOR_MS = 250;
 constexpr unsigned long INTERVAL_WIFI_MS = 10000;
@@ -41,9 +55,7 @@ constexpr uint8_t SUARA_ADA_ORANG = 1;
 constexpr uint8_t SUARA_SELESAI = 2;
 constexpr uint8_t SUARA_PENUH = 3;
 
-BearSSL::WiFiClientSecure secureClient;
 BearSSL::WiFiClientSecure firebaseClient;
-UniversalTelegramBot bot(BOT_TOKEN, secureClient);
 Servo servoTutup;
 SoftwareSerial dfSerial(DFPLAYER_RX, DFPLAYER_TX);
 DFRobotDFPlayerMini dfPlayer;
@@ -54,8 +66,6 @@ bool suaraAktif = true;
 bool siklusBuangAktif = false;
 bool statusPenuh = false;
 bool wifiSebelumnyaTerhubung = false;
-bool notifikasiPenuhTertunda = false;
-bool notifikasiKosongTertunda = false;
 bool suaraPernahDiputar = false;
 bool firebaseTutupPernahDibaca = false;
 bool nilaiTutupFirebaseTerakhir = false;
@@ -288,7 +298,17 @@ void prosesPerintahFirebase() {
     if (!suaraAktif) statusSuara = "Suara Nonaktif";
   }
 
-  if (data["tutupTerbuka"].is<bool>()) {
+  bool perintahTutupDiproses = false;
+  if (data["perintahTutup"].is<bool>()) {
+    bool perintahTutup = data["perintahTutup"].as<bool>();
+    nilaiTutupFirebaseTerakhir = perintahTutup;
+    firebaseTutupPernahDibaca = true;
+    aturTutupDariAplikasi(perintahTutup);
+    firebasePut("smartbin/perintahTutup", "null");
+    perintahTutupDiproses = true;
+  }
+
+  if (!perintahTutupDiproses && data["tutupTerbuka"].is<bool>()) {
     bool nilaiTutup = data["tutupTerbuka"].as<bool>();
 
     // Nilai ini dianggap sebagai perintah hanya saat berubah dari aplikasi.
@@ -316,7 +336,7 @@ void prosesFirebase(unsigned long sekarang) {
   if (!firebaseDikonfigurasi()) {
     static bool sudahPeringatkan = false;
     if (!sudahPeringatkan) {
-      Serial.println("Firebase belum dikonfigurasi di secrets.h.");
+      Serial.println("Firebase belum dikonfigurasi di bagian atas sketch.");
       sudahPeringatkan = true;
     }
     return;
@@ -331,14 +351,6 @@ void prosesFirebase(unsigned long sekarang) {
     firebaseKirimTerakhir = sekarang;
     kirimDataKeFirebase();
   }
-}
-
-bool kirimTelegram(const String& pesan) {
-  if (WiFi.status() != WL_CONNECTED) return false;
-  bool terkirim = bot.sendMessage(CHAT_ID, pesan, "");
-  Serial.println(terkirim ? "Telegram: pesan terkirim"
-                          : "Telegram: pesan gagal dikirim");
-  return terkirim;
 }
 
 void mulaiKoneksiWiFi() {
@@ -356,20 +368,10 @@ void prosesStatusWiFi(unsigned long sekarang) {
     mulaiKoneksiWiFi();
   }
 
-  // Dikirim saat pertama online maupun setelah tersambung kembali.
+  // Ditampilkan saat pertama online maupun setelah tersambung kembali.
   if (wifiTerhubung && !wifiSebelumnyaTerhubung) {
     Serial.printf("Wi-Fi terhubung. IP: %s\n",
                   WiFi.localIP().toString().c_str());
-    kirimTelegram("sistem aktif");
-
-    if (notifikasiPenuhTertunda &&
-        kirimTelegram("tempat sampah penuh silahkan kosongkan")) {
-      notifikasiPenuhTertunda = false;
-    }
-    if (notifikasiKosongTertunda &&
-        kirimTelegram("tempat sampah kosong siap di gunakan kembali")) {
-      notifikasiKosongTertunda = false;
-    }
   }
 
   if (!wifiTerhubung && wifiSebelumnyaTerhubung) {
@@ -413,22 +415,13 @@ void prosesKapasitasSampah() {
     statusPenuh = true;
     antrekanSuara(SUARA_PENUH);
     Serial.println("Tempat sampah penuh.");
-
-    if (!kirimTelegram("tempat sampah penuh silahkan kosongkan")) {
-      notifikasiPenuhTertunda = true;
-    }
   }
 
-  // Hysteresis mencegah pesan berulang ketika jarak berada dekat 10 cm.
+  // Hysteresis mencegah status penuh berubah-ubah saat jarak dekat batas.
   if (statusPenuh && kapasitasPersen < 50 &&
       jarakSampah > BATAS_KOSONG_KEMBALI_CM) {
     statusPenuh = false;
-    notifikasiPenuhTertunda = false;
     Serial.println("Tempat sampah kosong dan siap digunakan kembali.");
-
-    if (!kirimTelegram("tempat sampah kosong siap di gunakan kembali")) {
-      notifikasiKosongTertunda = true;
-    }
   }
 }
 
@@ -451,7 +444,6 @@ void setup() {
     Serial.println("DFPlayer tidak terdeteksi. Periksa kabel dan microSD.");
   }
 
-  secureClient.setInsecure();
   firebaseClient.setInsecure();
   mulaiKoneksiWiFi();
 }

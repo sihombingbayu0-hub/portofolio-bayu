@@ -5,13 +5,12 @@
 - Ultrasonik 1 membuka tutup saat orang berjarak kurang dari 50 cm.
 - DFPlayer memutar suara 1 saat orang datang, suara 2 setelah selesai, dan suara 3 saat penuh.
 - Ultrasonik 2 menyatakan penuh jika jarak sampah kurang dari 10 cm.
-- Telegram mengirim `sistem aktif` ketika Wi-Fi tersambung.
-- Telegram mengirim `tempat sampah penuh silahkan kosongkan` ketika penuh.
-- Setelah jarak kembali lebih dari 15 cm, Telegram mengirim `tempat sampah kosong siap di gunakan kembali`.
 - ESP8266 mengirim data sensor ke Firebase Realtime Database pada path `smartbin`.
 - Aplikasi HP dapat mengubah `smartbin/tutupTerbuka` untuk membuka atau menutup servo.
+- Aplikasi HP juga mengirim perintah servo lewat `smartbin/perintahTutup` agar perintah tidak tertimpa data sensor.
 - Aplikasi HP dapat mengubah `smartbin/perintahSuara` menjadi `1`, `2`, atau `3` untuk memutar DFPlayer Mini.
-- Sistem lokal tetap bekerja saat internet mati. Pesan sensor yang tertunda dikirim ketika Wi-Fi kembali.
+- Aplikasi HP membaca data Firebase secara realtime untuk menampilkan status tempat sampah.
+- Sistem lokal tetap bekerja saat internet mati, lalu data dikirim lagi ketika Wi-Fi kembali tersambung.
 
 ## Foto Prototype
 
@@ -71,13 +70,12 @@ Jika audio lebih panjang dari 3,5 detik, naikkan `JEDA_SUARA_MS` pada sketch.
 
 Pilih board `NodeMCU 1.0 (ESP-12E Module)`, kemudian instal:
 
-- `UniversalTelegramBot` oleh Brian Lough
 - `ArduinoJson`
 - `DFRobotDFPlayerMini`
 
 Library `ESP8266WiFi`, `ESP8266HTTPClient`, `Servo`, dan `SoftwareSerial` tersedia bersama paket board ESP8266.
 
-Salin `iot_tempat_sampah/secrets.example.h` menjadi `iot_tempat_sampah/secrets.h`, lalu isi data Wi-Fi, Telegram, dan Firebase di file `secrets.h` sebelum upload. File `secrets.h` sengaja tidak diupload ke GitHub. Serial Monitor menggunakan 115200 baud.
+Isi data Wi-Fi dan Firebase langsung di bagian atas file `iot_tempat_sampah/iot_tempat_sampah.ino`, lalu upload ke ESP8266. Serial Monitor menggunakan 115200 baud.
 
 ## Firebase Realtime Database
 
@@ -90,6 +88,7 @@ Gunakan struktur data berikut:
     "jarakOrang": 35,
     "statusSampah": "Sedang",
     "tutupTerbuka": false,
+    "perintahTutup": null,
     "suaraAktif": true,
     "perintahSuara": 0,
     "statusSuara": "Siap"
@@ -109,6 +108,7 @@ Path yang dikirim ESP8266:
 Path yang dibaca ESP8266 dari aplikasi HP:
 
 - `smartbin/tutupTerbuka`
+- `smartbin/perintahTutup`
 - `smartbin/suaraAktif`
 - `smartbin/perintahSuara`
 

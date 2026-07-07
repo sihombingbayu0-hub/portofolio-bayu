@@ -2,21 +2,12 @@
   ==============================================================
   KONFIGURASI FIREBASE
   ==============================================================
-  Ganti semua nilai GANTI_... di bawah ini dengan konfigurasi
-  Firebase Web App milik kamu dari Firebase Console.
+  Aplikasi ini memakai REST API Firebase Realtime Database.
+  Jadi cukup isi URL database, tidak perlu konfigurasi Web App lengkap.
 */
-const firebaseConfig = {
-  apiKey: "GANTI_API_KEY",
-  authDomain: "GANTI_PROJECT_ID.firebaseapp.com",
-  databaseURL: "https://GANTI_PROJECT_ID-default-rtdb.firebaseio.com",
-  projectId: "GANTI_PROJECT_ID",
-  storageBucket: "GANTI_PROJECT_ID.appspot.com",
-  messagingSenderId: "GANTI_MESSAGING_SENDER_ID",
-  appId: "GANTI_APP_ID"
-};
-
-// Firebase Web SDK dari CDN resmi Google.
-const FIREBASE_SDK_VERSION = "12.15.0";
+const FIREBASE_DATABASE_URL = "https://smart-bin-monitor-6f0e1-default-rtdb.firebaseio.com";
+const FIREBASE_AUTH = "";
+const INTERVAL_FIREBASE_MS = 1500;
 
 // Semua path Firebase dikumpulkan di sini agar mudah dicari dan diganti.
 const pathFirebase = {
@@ -24,6 +15,7 @@ const pathFirebase = {
   jarakOrang: "smartbin/jarakOrang",
   statusSampah: "smartbin/statusSampah",
   tutupTerbuka: "smartbin/tutupTerbuka",
+  perintahTutup: "smartbin/perintahTutup",
   suaraAktif: "smartbin/suaraAktif",
   perintahSuara: "smartbin/perintahSuara",
   statusSuara: "smartbin/statusSuara"
@@ -40,9 +32,9 @@ let dataTempatSampah = {
   statusSuara: "Siap"
 };
 
-let database = null;
 let firebaseSiap = false;
-let fungsiFirebase = {};
+let intervalFirebase = null;
+let sedangMengambilData = false;
 
 // Mengambil elemen HTML agar JavaScript bisa memperbarui tampilan.
 const kapasitasText = document.getElementById("kapasitasText");
@@ -199,12 +191,10 @@ function ubahStatusKoneksi(teks, tipe) {
 
 // Mengecek apakah konfigurasi Firebase masih berisi placeholder.
 function konfigurasiFirebaseBelumDiisi() {
-  const kunciWajib = ["apiKey", "authDomain", "databaseURL", "projectId", "storageBucket", "messagingSenderId", "appId"];
-
-  return kunciWajib.some(function (kunci) {
-    const nilai = firebaseConfig[kunci];
-    return !nilai || String(nilai).includes("GANTI_");
-  });
+  return !FIREBASE_DATABASE_URL ||
+    FIREBASE_DATABASE_URL.includes("GANTI_") ||
+    FIREBASE_DATABASE_URL.includes("console.firebase.google.com") ||
+    FIREBASE_DATABASE_URL.includes("github.io");
 }
 
 // Mengunci tombol suara sebentar saat aplikasi sedang menulis ke Firebase.
@@ -258,89 +248,95 @@ function tampilkanData(pesanTambahan) {
     : `Terakhir diperbarui: ${formatWaktuSekarang()}`;
 }
 
-// Listener realtime untuk satu path Firebase.
-function dengarkanPath(path, saatDataMasuk) {
-  const dataRef = fungsiFirebase.ref(database, path);
+// Membuat URL REST Firebase untuk membaca atau menulis satu path.
+function buatUrlFirebase(path) {
+  let url = FIREBASE_DATABASE_URL.trim();
 
-  fungsiFirebase.onValue(dataRef, function (snapshot) {
-    if (snapshot.exists()) {
-      saatDataMasuk(snapshot.val());
-      ubahStatusKoneksi("Firebase realtime aktif", "online");
-      tampilkanData("Data Firebase diperbarui");
-      return;
+  if (url.endsWith("/")) {
+    url = url.slice(0, -1);
+  }
+
+  url += `/${path}.json`;
+
+  if (FIREBASE_AUTH) {
+    url += `?auth=${encodeURIComponent(FIREBASE_AUTH)}`;
+  }
+
+  return url;
+}
+
+// Fungsi umum untuk komunikasi ke Firebase Realtime Database.
+async function mintaFirebase(path, method, nilai) {
+  const pilihan = {
+    method,
+    headers: {
+      "Content-Type": "application/json"
     }
+  };
 
-    ubahStatusKoneksi("Data Firebase belum lengkap", "warning");
-  }, function (error) {
-    console.error("Gagal membaca Firebase:", error);
-    ubahStatusKoneksi("Firebase gagal dibaca", "error");
-    lastUpdate.textContent = "Periksa koneksi, konfigurasi, atau rules database Firebase.";
-  });
+  if (nilai !== undefined) {
+    pilihan.body = JSON.stringify(nilai);
+  }
+
+  const response = await fetch(buatUrlFirebase(path), pilihan);
+
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}`);
+  }
+
+  return response.json();
 }
 
-// Memasang listener agar perubahan di Firebase otomatis mengubah tampilan.
-function pasangListenerRealtime() {
-  dengarkanPath(pathFirebase.kapasitas, function (nilai) {
-    dataTempatSampah.kapasitas = batasiKapasitas(nilai);
-  });
-
-  dengarkanPath(pathFirebase.jarakOrang, function (nilai) {
-    dataTempatSampah.jarakOrang = bersihkanJarak(nilai);
-  });
-
-  dengarkanPath(pathFirebase.statusSampah, function (nilai) {
-    dataTempatSampah.statusSampah = bersihkanTeks(nilai, dataTempatSampah.statusSampah);
-  });
-
-  dengarkanPath(pathFirebase.tutupTerbuka, function (nilai) {
-    dataTempatSampah.tutupTerbuka = bersihkanBoolean(nilai, dataTempatSampah.tutupTerbuka);
-  });
-
-  dengarkanPath(pathFirebase.suaraAktif, function (nilai) {
-    dataTempatSampah.suaraAktif = bersihkanBoolean(nilai, dataTempatSampah.suaraAktif);
-  });
-
-  dengarkanPath(pathFirebase.perintahSuara, function (nilai) {
-    dataTempatSampah.perintahSuara = bersihkanPerintahSuara(nilai);
-  });
-
-  dengarkanPath(pathFirebase.statusSuara, function (nilai) {
-    dataTempatSampah.statusSuara = bersihkanTeks(nilai, dataTempatSampah.statusSuara);
-  });
+// Menyalin data dari Firebase ke variabel aplikasi sebelum ditampilkan.
+function terapkanDataFirebase(data) {
+  dataTempatSampah.kapasitas = batasiKapasitas(data.kapasitas);
+  dataTempatSampah.jarakOrang = bersihkanJarak(data.jarakOrang);
+  dataTempatSampah.statusSampah = bersihkanTeks(data.statusSampah, tentukanStatusSampah(dataTempatSampah.kapasitas));
+  dataTempatSampah.tutupTerbuka = bersihkanBoolean(data.tutupTerbuka, dataTempatSampah.tutupTerbuka);
+  dataTempatSampah.suaraAktif = bersihkanBoolean(data.suaraAktif, dataTempatSampah.suaraAktif);
+  dataTempatSampah.perintahSuara = bersihkanPerintahSuara(data.perintahSuara);
+  dataTempatSampah.statusSuara = bersihkanTeks(data.statusSuara, dataTempatSampah.statusSuara);
 }
 
-// Mengambil semua data smartbin sekali saat tombol Cek Status ditekan.
-async function cekStatusDariFirebase() {
-  refreshButton.disabled = true;
-  lastUpdate.textContent = "Mengambil data terbaru dari Firebase...";
+// Mengambil semua data smartbin dari Firebase.
+async function ambilDataDariFirebase(pesanSukses, tampilkanLoading) {
+  if (sedangMengambilData) return;
+
+  sedangMengambilData = true;
+
+  if (tampilkanLoading) {
+    refreshButton.disabled = true;
+    lastUpdate.textContent = "Mengambil data terbaru dari Firebase...";
+  }
 
   try {
-    const smartbinRef = fungsiFirebase.ref(database, "smartbin");
-    const snapshot = await fungsiFirebase.get(smartbinRef);
+    const data = await mintaFirebase("smartbin", "GET");
 
-    if (!snapshot.exists()) {
+    if (!data) {
       ubahStatusKoneksi("Data smartbin belum ada", "warning");
       lastUpdate.textContent = "Node smartbin belum ditemukan di Firebase.";
       return;
     }
 
-    const data = snapshot.val();
-    dataTempatSampah.kapasitas = batasiKapasitas(data.kapasitas);
-    dataTempatSampah.jarakOrang = bersihkanJarak(data.jarakOrang);
-    dataTempatSampah.statusSampah = bersihkanTeks(data.statusSampah, tentukanStatusSampah(dataTempatSampah.kapasitas));
-    dataTempatSampah.tutupTerbuka = bersihkanBoolean(data.tutupTerbuka, dataTempatSampah.tutupTerbuka);
-    dataTempatSampah.suaraAktif = bersihkanBoolean(data.suaraAktif, dataTempatSampah.suaraAktif);
-    dataTempatSampah.perintahSuara = bersihkanPerintahSuara(data.perintahSuara);
-    dataTempatSampah.statusSuara = bersihkanTeks(data.statusSuara, dataTempatSampah.statusSuara);
-
-    tampilkanData("Data Firebase dicek manual");
+    terapkanDataFirebase(data);
+    ubahStatusKoneksi("Firebase aktif", "online");
+    tampilkanData(pesanSukses);
   } catch (error) {
-    console.error("Gagal cek status Firebase:", error);
-    ubahStatusKoneksi("Cek Firebase gagal", "error");
-    lastUpdate.textContent = "Gagal mengambil data terbaru dari Firebase.";
+    console.error("Gagal membaca Firebase:", error);
+    ubahStatusKoneksi("Firebase gagal dibaca", "error");
+    lastUpdate.textContent = "Periksa koneksi internet, URL database, atau rules Firebase.";
   } finally {
-    refreshButton.disabled = false;
+    sedangMengambilData = false;
+
+    if (tampilkanLoading) {
+      refreshButton.disabled = false;
+    }
   }
+}
+
+// Mengambil data saat tombol Cek Status ditekan.
+async function cekStatusDariFirebase() {
+  await ambilDataDariFirebase("Data Firebase dicek manual", true);
 }
 
 // Fungsi simulasi tetap dipakai jika konfigurasi Firebase belum diisi.
@@ -363,8 +359,7 @@ async function tulisKeFirebase(path, nilai, pesanSukses, pesanGagal) {
   }
 
   try {
-    const dataRef = fungsiFirebase.ref(database, path);
-    await fungsiFirebase.set(dataRef, nilai);
+    await mintaFirebase(path, "PUT", nilai);
     tampilkanData(pesanSukses);
     return true;
   } catch (error) {
@@ -387,12 +382,22 @@ async function ubahStatusTutup() {
   }
 
   toggleLidButton.disabled = true;
-  await tulisKeFirebase(
-    pathFirebase.tutupTerbuka,
+  const perintahTerkirim = await tulisKeFirebase(
+    pathFirebase.perintahTutup,
     statusBaru,
-    "Nilai tutupTerbuka diperbarui",
-    "Gagal menulis nilai tutupTerbuka ke Firebase."
+    "Perintah servo dikirim ke Firebase",
+    "Gagal menulis perintah servo ke Firebase."
   );
+
+  if (perintahTerkirim) {
+    await tulisKeFirebase(
+      pathFirebase.tutupTerbuka,
+      statusBaru,
+      "Nilai tutupTerbuka diperbarui",
+      "Gagal menulis nilai tutupTerbuka ke Firebase."
+    );
+  }
+
   toggleLidButton.disabled = false;
 }
 
@@ -441,7 +446,7 @@ async function kirimPerintahSuara(nomorSuara) {
   aturTombolSuaraNonaktif(false);
 }
 
-// Memuat Firebase dari CDN dan mengaktifkan Realtime Database.
+// Mengaktifkan koneksi Firebase REST dan membaca data secara berkala.
 async function mulaiFirebase() {
   if (konfigurasiFirebaseBelumDiisi()) {
     ubahStatusKoneksi("Simulasi aktif", "warning");
@@ -449,32 +454,17 @@ async function mulaiFirebase() {
     return;
   }
 
-  try {
-    ubahStatusKoneksi("Menghubungkan Firebase", "warning");
+  firebaseSiap = true;
+  ubahStatusKoneksi("Menghubungkan Firebase", "warning");
+  await ambilDataDariFirebase("Data Firebase dimuat", false);
 
-    const firebaseApp = await import(`https://www.gstatic.com/firebasejs/${FIREBASE_SDK_VERSION}/firebase-app.js`);
-    const firebaseDatabase = await import(`https://www.gstatic.com/firebasejs/${FIREBASE_SDK_VERSION}/firebase-database.js`);
-
-    const app = firebaseApp.initializeApp(firebaseConfig);
-    database = firebaseDatabase.getDatabase(app);
-
-    fungsiFirebase = {
-      ref: firebaseDatabase.ref,
-      onValue: firebaseDatabase.onValue,
-      get: firebaseDatabase.get,
-      set: firebaseDatabase.set
-    };
-
-    firebaseSiap = true;
-    pasangListenerRealtime();
-    ubahStatusKoneksi("Firebase realtime aktif", "online");
-    lastUpdate.textContent = "Menunggu data realtime dari Firebase...";
-  } catch (error) {
-    console.error("Gagal menghubungkan Firebase:", error);
-    firebaseSiap = false;
-    ubahStatusKoneksi("Firebase gagal terhubung", "error");
-    lastUpdate.textContent = "Periksa konfigurasi Firebase dan koneksi internet.";
+  if (intervalFirebase) {
+    clearInterval(intervalFirebase);
   }
+
+  intervalFirebase = setInterval(function () {
+    ambilDataDariFirebase("Data Firebase diperbarui", false);
+  }, INTERVAL_FIREBASE_MS);
 }
 
 // Tombol utama aplikasi.
