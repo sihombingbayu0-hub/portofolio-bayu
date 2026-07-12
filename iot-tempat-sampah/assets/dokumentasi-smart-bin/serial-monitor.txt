@@ -1,0 +1,12 @@
+Orang: GAGAL | Sampah: 2.0 cm | Penuh: TIDAK
+TEMPAT SAMPAH PENUH (<4 cm).
+Telegram: pesan terkirim.
+Orang: GAGAL | Sampah: 2.3 cm | Penuh: YA
+Status DFPlayer: tipe=5, nilai=2
+Orang: GAGAL | Sampah: 269.8 cm | Penuh: YA
+Orang: GAGAL | Sampah: 55.7 cm | Penuh: YA
+Orang: 7.7 cm | Sampah: 44.4 cm | Penuh: YA
+Tempat sampah kosong: siap digunakan kembali.
+Telegram: pesan terkirim.
+Memutar /mp3/0001.mp3
+Orang <50 cm: tempat sampah terbuka.

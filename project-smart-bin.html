@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Detail project Smart Bin Bayu Aditya Sihombing.">
-  <title>Smart Bin - Project Bayu</title>
+  <meta name="description" content="Dokumentasi project Tempat Sampah Pintar berbasis IoT karya Bayu Aditya Sihombing.">
+  <title>Tempat Sampah Pintar Berbasis IoT - Project Bayu</title>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <script>
     (() => {
@@ -17,10 +17,10 @@
   </script>
   <link rel="stylesheet" href="styles.css">
 </head>
-<body class="project-detail-page">
+<body class="project-detail-page smart-bin-page">
   <header class="detail-header">
-    <a class="detail-brand" href="index.html#projects">BAS</a>
-    <nav aria-label="Navigasi detail project">
+    <a class="detail-brand" href="index.html#projects" aria-label="Kembali ke portfolio Bayu">BAS</a>
+    <nav aria-label="Navigasi project Smart Bin">
       <button class="theme-toggle" type="button" data-theme-toggle aria-label="Aktifkan mode gelap" aria-pressed="false" title="Mode gelap">
         <svg class="moon-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5 7 7 0 1 0 20.5 14.5Z"/></svg>
         <svg class="sun-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
@@ -30,105 +30,481 @@
     </nav>
   </header>
 
-  <main class="project-detail">
-    <section class="detail-hero">
+  <main class="project-detail sb-detail">
+    <section class="detail-hero sb-hero" aria-labelledby="project-title">
       <div class="detail-copy">
         <span class="detail-kicker">IoT / Automation / Embedded System</span>
-        <h1>Smart Bin - Tempat Sampah Pintar</h1>
-        <p>Prototype tempat sampah otomatis yang membaca objek di depan tutup, memantau kapasitas sampah, memberi respons suara, dan mengirim notifikasi ketika tempat sampah penuh.</p>
-        <div class="detail-actions">
-          <a class="project-link primary" href="https://github.com/sihombingbayu0-hub/portofolio-bayu/tree/main/iot-tempat-sampah" target="_blank" rel="noreferrer">Buka GitHub</a>
-          <a class="project-link secondary" href="https://github.com/sihombingbayu0-hub/portofolio-bayu/tree/main/iot-tempat-sampah/assets/dokumentasi-smart-bin" target="_blank" rel="noreferrer">Dokumentasi &amp; Video</a>
-          <a class="project-link secondary" href="index.html#projects">Lihat Project Lain</a>
-        </div>
-      </div>
+        <h1 id="project-title">Tempat Sampah Pintar Berbasis IoT</h1>
+        <p>Sistem tempat sampah otomatis yang mendeteksi pengguna, memantau kapasitas, memutar audio, dan mengirim notifikasi melalui Telegram.</p>
 
-      <div class="detail-visual">
-        <div class="detail-photo-grid">
-          <img src="iot-tempat-sampah/assets/foto/prototype-depan-terbuka.jpeg" alt="Prototype tempat sampah pintar dengan tutup terbuka">
-          <div class="detail-photo-stack">
-            <img src="iot-tempat-sampah/assets/foto/prototype-belakang-rangkaian.png" alt="Rangkaian komponen di belakang prototype">
-            <img src="iot-tempat-sampah/assets/foto/prototype-sensor-tutup.png" alt="Sensor ultrasonik pada tutup prototype">
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="detail-section-grid">
-      <article class="detail-panel">
-        <h2>Ringkasan</h2>
-        <p>Project ini dibuat untuk membantu proses pembuangan sampah agar lebih higienis dan mudah dipantau. Sistem memakai sensor ultrasonik untuk mendeteksi orang dan kapasitas, lalu servo membuka tutup secara otomatis.</p>
-        <div class="detail-tech">
-          <span>NodeMCU ESP8266</span>
-          <span>Arduino IDE</span>
+        <div class="detail-tech sb-tech" aria-label="Teknologi yang digunakan">
+          <span>ESP8266</span>
+          <span>IoT</span>
           <span>HC-SR04</span>
-          <span>Servo Motor</span>
+          <span>Servo</span>
           <span>DFPlayer Mini</span>
           <span>Telegram Bot</span>
+          <span>Arduino IDE</span>
         </div>
+
+        <div class="detail-actions">
+          <a class="project-link primary" href="#dokumentasi-project">Lihat Dokumentasi</a>
+          <a class="project-link secondary" href="#source-code">Lihat Source Code</a>
+          <a class="project-link secondary" href="https://github.com/sihombingbayu0-hub/portofolio-bayu/tree/main/iot-tempat-sampah" target="_blank" rel="noreferrer">Lihat GitHub</a>
+        </div>
+      </div>
+
+      <button class="detail-visual sb-hero-media" type="button" data-lightbox-src="iot-tempat-sampah/assets/foto/prototype-depan-terbuka.jpeg" data-lightbox-alt="Prototype Tempat Sampah Pintar dengan penutup terbuka" aria-label="Perbesar gambar prototype Tempat Sampah Pintar">
+        <img src="iot-tempat-sampah/assets/foto/prototype-depan-terbuka.jpeg" alt="Prototype Tempat Sampah Pintar dengan penutup terbuka" width="960" height="720">
+        <span>Prototype aktif <strong>ESP8266 + 2 sensor ultrasonik</strong></span>
+      </button>
+    </section>
+
+    <section class="sb-section sb-about" id="tentang-project" aria-labelledby="about-title">
+      <div class="sb-section-heading">
+        <span>01 / Tentang Project</span>
+        <h2 id="about-title">Otomatisasi sederhana untuk penggunaan yang lebih higienis.</h2>
+        <p>Project ini dibuat untuk mengurangi kontak langsung dengan penutup tempat sampah sekaligus memberikan informasi ketika kapasitas sudah penuh.</p>
+      </div>
+
+      <div class="sb-about-grid">
+        <article class="sb-story-card sb-story-main">
+          <h3>Latar belakang dan tujuan</h3>
+          <p>Tempat sampah manual mengharuskan pengguna menyentuh penutup dan sering tidak memberi tanda saat isinya sudah penuh. Prototype ini menggabungkan dua sensor jarak, aktuator servo, audio, serta Telegram agar proses membuang sampah lebih praktis dan kondisi kapasitas lebih mudah diketahui.</p>
+          <p>NodeMCU membaca sensor pengguna dan sensor kapasitas secara berkala. Tutup hanya dibuka jika pengguna berada di bawah 50 cm dan status tempat sampah belum penuh.</p>
+        </article>
+
+        <article class="sb-story-card">
+          <h3>Manfaat</h3>
+          <ul class="detail-list">
+            <li>Mengurangi sentuhan langsung pada penutup.</li>
+            <li>Memberikan peringatan audio sesuai kondisi.</li>
+            <li>Mengirim status penuh dan kosong melalui Telegram.</li>
+            <li>Menahan proses pembukaan ketika kapasitas penuh.</li>
+          </ul>
+        </article>
+
+        <article class="sb-story-card">
+          <h3>Peran saya</h3>
+          <ul class="detail-list">
+            <li>Merancang rangkaian perangkat keras.</li>
+            <li>Memprogram NodeMCU ESP8266.</li>
+            <li>Mengintegrasikan sensor, servo, DFPlayer, dan Telegram.</li>
+            <li>Menguji sensor serta alur sistem.</li>
+            <li>Membuat prototype dan dokumentasi project.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="sb-section" aria-labelledby="features-title">
+      <div class="sb-section-heading">
+        <span>02 / Fitur Utama</span>
+        <h2 id="features-title">Delapan fungsi dalam satu prototype.</h2>
+      </div>
+
+      <div class="sb-feature-grid">
+        <article class="sb-feature-card"><span class="sb-icon" aria-hidden="true">↗</span><h3>Tutup otomatis</h3><p>Servo membuka penutup tanpa sentuhan ketika pengguna terdeteksi.</p></article>
+        <article class="sb-feature-card"><span class="sb-icon" aria-hidden="true">◎</span><h3>Deteksi pengguna</h3><p>HC-SR04 pertama membaca objek pada jarak kurang dari 50 cm.</p></article>
+        <article class="sb-feature-card"><span class="sb-icon" aria-hidden="true">◫</span><h3>Monitoring kapasitas</h3><p>HC-SR04 kedua mengukur jarak permukaan sampah dari bagian atas.</p></article>
+        <article class="sb-feature-card"><span class="sb-icon" aria-hidden="true">✦</span><h3>Notifikasi Telegram</h3><p>Bot mengirim status sistem aktif, penuh, dan kembali kosong.</p></article>
+        <article class="sb-feature-card"><span class="sb-icon" aria-hidden="true">♪</span><h3>Audio interaktif</h3><p>DFPlayer Mini memutar audio untuk kedatangan, selesai, dan kondisi penuh.</p></article>
+        <article class="sb-feature-card"><span class="sb-icon" aria-hidden="true">⊘</span><h3>Pencegahan saat penuh</h3><p>Perintah membuka diabaikan dan servo dipastikan tertutup saat penuh.</p></article>
+        <article class="sb-feature-card"><span class="sb-icon" aria-hidden="true">⌁</span><h3>Pengecekan Telegram</h3><p>Status penting dikirim ke chat yang telah dikonfigurasi pada perangkat.</p></article>
+        <article class="sb-feature-card"><span class="sb-icon" aria-hidden="true">⌁</span><h3>Sistem berbasis Wi-Fi</h3><p>ESP8266 menjaga koneksi dan mencoba tersambung kembali setiap 10 detik.</p></article>
+      </div>
+    </section>
+
+    <section class="sb-section" id="cara-kerja" aria-labelledby="workflow-title">
+      <div class="sb-section-heading sb-heading-split">
+        <div>
+          <span>03 / Cara Kerja Sistem</span>
+          <h2 id="workflow-title">Dari deteksi pengguna sampai notifikasi penuh.</h2>
+        </div>
+        <button class="sb-flowchart-preview" type="button" data-lightbox-src="iot-tempat-sampah/assets/dokumentasi-smart-bin/flowchart-sistem.png" data-lightbox-alt="Flowchart sistem Tempat Sampah Pintar" aria-label="Perbesar flowchart sistem">
+          <img src="iot-tempat-sampah/assets/dokumentasi-smart-bin/flowchart-sistem.png" alt="Flowchart sistem Tempat Sampah Pintar" loading="lazy" width="800" height="800">
+          <span>Lihat flowchart</span>
+        </button>
+      </div>
+
+      <ol class="sb-workflow">
+        <li><span>01</span><div><h3>Mendeteksi pengguna</h3><p>Sensor ultrasonik pertama membaca jarak orang di depan penutup.</p></div></li>
+        <li><span>02</span><div><h3>Memeriksa kapasitas</h3><p>Sistem memastikan status tempat sampah belum penuh sebelum membuka.</p></div></li>
+        <li><span>03</span><div><h3>Membuka penutup</h3><p>Servo bergerak perlahan dari 165° menuju 75°.</p></div></li>
+        <li><span>04</span><div><h3>Memutar audio</h3><p>DFPlayer Mini menjalankan file <code>/mp3/0001.mp3</code>.</p></div></li>
+        <li><span>05</span><div><h3>Menutup kembali</h3><p>Setelah pengguna menjauh selama 2 detik, servo kembali ke posisi tertutup.</p></div></li>
+        <li><span>06</span><div><h3>Memantau isi</h3><p>Sensor kedua membaca kapasitas setiap siklus sensor sekitar 300 ms.</p></div></li>
+        <li><span>07</span><div><h3>Mengunci saat penuh</h3><p>Tiga pembacaan di bawah 4 cm mengaktifkan status penuh dan mencegah pembukaan.</p></div></li>
+        <li><span>08</span><div><h3>Mengirim Telegram</h3><p>Sistem mengirim peringatan penuh dan status siap setelah jarak reset melewati 15 cm.</p></div></li>
+      </ol>
+    </section>
+
+    <section class="sb-section" aria-labelledby="components-title">
+      <div class="sb-section-heading">
+        <span>04 / Komponen</span>
+        <h2 id="components-title">Hardware dan software yang digunakan.</h2>
+      </div>
+
+      <div class="sb-component-columns">
+        <article class="sb-component-group">
+          <h3>Hardware</h3>
+          <div class="sb-component-grid">
+            <div><strong>NodeMCU ESP8266</strong><span>Pengendali utama dan koneksi Wi-Fi.</span></div>
+            <div><strong>2 × HC-SR04</strong><span>Deteksi pengguna dan kapasitas sampah.</span></div>
+            <div><strong>Motor servo</strong><span>Membuka serta menutup penutup.</span></div>
+            <div><strong>DFPlayer Mini</strong><span>Memutar tiga jenis respons audio.</span></div>
+            <div><strong>Speaker</strong><span>Keluaran suara dari DFPlayer Mini.</span></div>
+            <div><strong>Adaptor 5 V</strong><span>Catu daya rangkaian dan aktuator.</span></div>
+            <div><strong>Kabel &amp; resistor</strong><span>Interkoneksi serta perlindungan jalur sinyal.</span></div>
+            <div><strong>Prototype bin</strong><span>Media pemasangan seluruh komponen.</span></div>
+          </div>
+        </article>
+
+        <article class="sb-component-group">
+          <h3>Software &amp; library</h3>
+          <div class="sb-component-grid">
+            <div><strong>Arduino IDE</strong><span>Penulisan dan upload sketch ESP8266.</span></div>
+            <div><strong>Telegram Bot</strong><span>Media notifikasi status jarak jauh.</span></div>
+            <div><strong>ESP8266WiFi</strong><span>Pengaturan koneksi jaringan.</span></div>
+            <div><strong>UniversalTelegramBot</strong><span>Pengiriman pesan melalui bot.</span></div>
+            <div><strong>Servo</strong><span>Kontrol sudut motor servo.</span></div>
+            <div><strong>SoftwareSerial</strong><span>Komunikasi serial dengan DFPlayer.</span></div>
+            <div><strong>DFRobotDFPlayerMini</strong><span>Kontrol file audio pada microSD.</span></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="sb-section" id="dokumentasi-project" aria-labelledby="gallery-title">
+      <div class="sb-section-heading">
+        <span>05 / Dokumentasi Project</span>
+        <h2 id="gallery-title">Foto prototype, rangkaian, dan hasil pengujian.</h2>
+        <p>Semua gambar berikut berasal dari dokumentasi project ini. Klik gambar untuk membuka preview.</p>
+      </div>
+
+      <div class="sb-gallery">
+        <figure class="sb-gallery-card sb-gallery-wide">
+          <button type="button" data-lightbox-src="iot-tempat-sampah/assets/foto/prototype-depan-terbuka.jpeg" data-lightbox-alt="Prototype keseluruhan dengan penutup terbuka">
+            <img src="iot-tempat-sampah/assets/foto/prototype-depan-terbuka.jpeg" alt="Prototype keseluruhan dengan penutup terbuka" loading="lazy" width="960" height="720">
+          </button>
+          <figcaption><strong>Prototype keseluruhan</strong><span>Tampak depan prototype ketika servo membuka penutup.</span></figcaption>
+        </figure>
+
+        <figure class="sb-gallery-card">
+          <button type="button" data-lightbox-src="iot-tempat-sampah/assets/foto/prototype-belakang-rangkaian.png" data-lightbox-alt="Rangkaian komponen di belakang prototype">
+            <img src="iot-tempat-sampah/assets/foto/prototype-belakang-rangkaian.png" alt="Rangkaian komponen di belakang prototype" loading="lazy" width="960" height="720">
+          </button>
+          <figcaption><strong>Rangkaian komponen</strong><span>Penempatan NodeMCU dan sambungan komponen pada prototype.</span></figcaption>
+        </figure>
+
+        <figure class="sb-gallery-card">
+          <button type="button" data-lightbox-src="iot-tempat-sampah/assets/foto/prototype-sensor-tutup.png" data-lightbox-alt="Sensor ultrasonik kapasitas di bagian penutup">
+            <img src="iot-tempat-sampah/assets/foto/prototype-sensor-tutup.png" alt="Sensor ultrasonik kapasitas di bagian penutup" loading="lazy" width="960" height="720">
+          </button>
+          <figcaption><strong>Posisi sensor</strong><span>Sensor kapasitas dipasang menghadap permukaan sampah.</span></figcaption>
+        </figure>
+
+        <figure class="sb-gallery-card">
+          <button type="button" data-lightbox-src="iot-tempat-sampah/assets/foto/rangkaian-servo.png" data-lightbox-alt="Pemasangan servo pembuka penutup">
+            <img src="iot-tempat-sampah/assets/foto/rangkaian-servo.png" alt="Pemasangan servo pembuka penutup" loading="lazy" width="960" height="720">
+          </button>
+          <figcaption><strong>Pemasangan servo</strong><span>Mekanisme servo yang menggerakkan penutup tempat sampah.</span></figcaption>
+        </figure>
+
+        <figure class="sb-gallery-card">
+          <button type="button" data-lightbox-src="iot-tempat-sampah/assets/dokumentasi-smart-bin/dfplayer-mini-dan-speaker.jpg" data-lightbox-alt="Diagram DFPlayer Mini dan speaker">
+            <img src="iot-tempat-sampah/assets/dokumentasi-smart-bin/dfplayer-mini-dan-speaker.jpg" alt="Diagram DFPlayer Mini dan speaker" loading="lazy" width="1600" height="900">
+          </button>
+          <figcaption><strong>DFPlayer dan speaker</strong><span>Diagram komunikasi serial serta keluaran audio.</span></figcaption>
+        </figure>
+
+        <figure class="sb-gallery-card">
+          <button type="button" data-lightbox-src="iot-tempat-sampah/assets/dokumentasi-smart-bin/serial-monitor-sampah-penuh.png" data-lightbox-alt="Serial Monitor saat kapasitas penuh">
+            <img src="iot-tempat-sampah/assets/dokumentasi-smart-bin/serial-monitor-sampah-penuh.png" alt="Serial Monitor saat kapasitas penuh" loading="lazy" width="1200" height="512">
+          </button>
+          <figcaption><strong>Proses pengujian</strong><span>Jarak 2,0–2,3 cm menghasilkan status penuh.</span></figcaption>
+        </figure>
+
+        <figure class="sb-gallery-card">
+          <button type="button" data-lightbox-src="iot-tempat-sampah/assets/dokumentasi-smart-bin/notifikasi-telegram.jpeg" data-lightbox-alt="Tampilan notifikasi Telegram Smart Bin">
+            <img src="iot-tempat-sampah/assets/dokumentasi-smart-bin/notifikasi-telegram.jpeg" alt="Tampilan notifikasi Telegram Smart Bin" loading="lazy" width="612" height="1296">
+          </button>
+          <figcaption><strong>Tampilan Telegram</strong><span>Pesan sistem aktif, penuh, dan kembali kosong.</span></figcaption>
+        </figure>
+
+        <figure class="sb-gallery-card">
+          <button type="button" data-lightbox-src="iot-tempat-sampah/assets/foto/prototype-depan-tertutup.png" data-lightbox-alt="Hasil akhir prototype dengan penutup tertutup">
+            <img src="iot-tempat-sampah/assets/foto/prototype-depan-tertutup.png" alt="Hasil akhir prototype dengan penutup tertutup" loading="lazy" width="960" height="720">
+          </button>
+          <figcaption><strong>Hasil akhir project</strong><span>Tampilan akhir prototype dalam posisi siap digunakan.</span></figcaption>
+        </figure>
+      </div>
+
+      <article class="sb-video-card">
+        <div>
+          <span>Video demonstrasi</span>
+          <h3>Pengujian prototype Tempat Sampah Pintar</h3>
+          <p>Rekaman penggunaan prototype sebagai pelengkap dokumentasi foto dan log Serial Monitor.</p>
+        </div>
+        <video controls preload="metadata" aria-label="Video demonstrasi Tempat Sampah Pintar">
+          <source src="iot-tempat-sampah/assets/dokumentasi-smart-bin/demo-smart-bin.mp4" type="video/mp4">
+          Browser Anda tidak mendukung pemutaran video MP4.
+        </video>
       </article>
+    </section>
 
-      <div class="detail-card-grid">
-        <article class="detail-card">
-          <span>01</span>
-          <h3>Masalah</h3>
-          <p>Tempat sampah manual kurang higienis dan kapasitasnya sering tidak diketahui sampai sudah penuh.</p>
-        </article>
-        <article class="detail-card">
-          <span>02</span>
-          <h3>Solusi</h3>
-          <p>Tutup terbuka otomatis saat objek terdeteksi, lalu sistem memantau isi dan mengirim notifikasi.</p>
-        </article>
-        <article class="detail-card">
-          <span>03</span>
-          <h3>Cara Kerja</h3>
-          <p>Sensor membaca jarak, NodeMCU memproses data, servo bergerak, dan output suara diputar lewat DFPlayer.</p>
-        </article>
-        <article class="detail-card">
-          <span>04</span>
-          <h3>Hasil</h3>
-          <p>Prototype berjalan lokal dan dokumentasinya siap dibaca ulang melalui repository GitHub.</p>
-        </article>
+    <section class="sb-section" id="serial-monitor" aria-labelledby="serial-title">
+      <div class="sb-section-heading">
+        <span>06 / Pengujian Serial Monitor</span>
+        <h2 id="serial-title">Bukti pembacaan sensor dan respons sistem.</h2>
+        <p>Data pada bagian ini ditranskripsikan dari screenshot pengujian asli, bukan log contoh.</p>
+      </div>
+
+      <div class="sb-tabs" data-tabs>
+        <div class="sb-tab-list" role="tablist" aria-label="Dokumentasi Serial Monitor">
+          <button type="button" role="tab" id="tab-screenshot" aria-controls="panel-screenshot" aria-selected="true">Screenshot</button>
+          <button type="button" role="tab" id="tab-log" aria-controls="panel-log" aria-selected="false" tabindex="-1">Log teks</button>
+        </div>
+
+        <div class="sb-tab-panel" id="panel-screenshot" role="tabpanel" aria-labelledby="tab-screenshot">
+          <div class="sb-serial-shot-grid">
+            <figure>
+              <button type="button" data-lightbox-src="iot-tempat-sampah/assets/dokumentasi-smart-bin/serial-monitor-sampah-penuh.png" data-lightbox-alt="Serial Monitor saat tempat sampah penuh">
+                <img src="iot-tempat-sampah/assets/dokumentasi-smart-bin/serial-monitor-sampah-penuh.png" alt="Serial Monitor saat tempat sampah penuh" loading="lazy" width="1200" height="512">
+              </button>
+              <figcaption><strong>Kondisi penuh</strong><span>Pembacaan 2,0–2,3 cm mengaktifkan status penuh dan Telegram berhasil dikirim.</span></figcaption>
+            </figure>
+            <figure>
+              <button type="button" data-lightbox-src="iot-tempat-sampah/assets/dokumentasi-smart-bin/serial-monitor-sampah-kosong.png" data-lightbox-alt="Serial Monitor setelah tempat sampah dikosongkan">
+                <img src="iot-tempat-sampah/assets/dokumentasi-smart-bin/serial-monitor-sampah-kosong.png" alt="Serial Monitor setelah tempat sampah dikosongkan" loading="lazy" width="1200" height="512">
+              </button>
+              <figcaption><strong>Kembali kosong</strong><span>Tiga pembacaan di atas 15 cm mereset status, lalu pengguna 7,7 cm memicu pembukaan.</span></figcaption>
+            </figure>
+          </div>
+        </div>
+
+        <div class="sb-tab-panel" id="panel-log" role="tabpanel" aria-labelledby="tab-log" hidden>
+          <div class="sb-status-row" aria-label="Status yang terlihat pada log pengujian">
+            <span class="is-ok">Telegram terkirim</span>
+            <span class="is-ok">Sensor kapasitas aktif</span>
+            <span class="is-ok">Sensor pengguna aktif</span>
+            <span class="is-ok">Servo terbuka</span>
+            <span class="is-ok">DFPlayer memutar audio</span>
+          </div>
+          <div class="sb-code-toolbar">
+            <span>Log pengujian asli</span>
+            <button type="button" data-copy-target="serial-log">Salin Log</button>
+          </div>
+          <pre class="sb-terminal"><code id="serial-log">Orang: GAGAL | Sampah: 2.0 cm | Penuh: TIDAK
+TEMPAT SAMPAH PENUH (&lt;4 cm).
+Telegram: pesan terkirim.
+Orang: GAGAL | Sampah: 2.3 cm | Penuh: YA
+Status DFPlayer: tipe=5, nilai=2
+Orang: GAGAL | Sampah: 269.8 cm | Penuh: YA
+Orang: GAGAL | Sampah: 55.7 cm | Penuh: YA
+Orang: 7.7 cm | Sampah: 44.4 cm | Penuh: YA
+Tempat sampah kosong: siap digunakan kembali.
+Telegram: pesan terkirim.
+Memutar /mp3/0001.mp3
+Orang &lt;50 cm: tempat sampah terbuka.</code></pre>
+        </div>
+      </div>
+
+      <div class="sb-table-wrap" tabindex="0" aria-label="Tabel hasil pengujian Smart Bin">
+        <table class="sb-test-table">
+          <thead><tr><th>No.</th><th>Pengujian</th><th>Kondisi</th><th>Hasil yang diharapkan</th><th>Hasil aktual</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>Sensor pengguna</td><td>Objek 7,7 cm</td><td>Pengguna terdeteksi</td><td>Jarak terbaca 7,7 cm</td><td><span class="sb-result is-pass">Lulus</span></td></tr>
+            <tr><td>2</td><td>Servo membuka</td><td>Belum penuh</td><td>Penutup terbuka</td><td>Log “tempat sampah terbuka”</td><td><span class="sb-result is-pass">Lulus</span></td></tr>
+            <tr><td>3</td><td>Servo menutup</td><td>Pengguna menjauh 2 detik</td><td>Penutup kembali tertutup</td><td>Belum ada screenshot khusus</td><td><span class="sb-result is-note">Perlu bukti</span></td></tr>
+            <tr><td>4</td><td>Audio diputar</td><td>Pengguna terdeteksi</td><td>Audio 0001 diputar</td><td>Log “Memutar /mp3/0001.mp3”</td><td><span class="sb-result is-pass">Lulus</span></td></tr>
+            <tr><td>5</td><td>Deteksi penuh</td><td>Jarak 2,0–2,3 cm</td><td>Status penuh aktif</td><td>Status berubah menjadi “YA”</td><td><span class="sb-result is-pass">Lulus</span></td></tr>
+            <tr><td>6</td><td>Notifikasi Telegram</td><td>Status penuh/kosong</td><td>Pesan terkirim</td><td>Log dan screenshot Telegram tersedia</td><td><span class="sb-result is-pass">Lulus</span></td></tr>
+            <tr><td>7</td><td>Blokir saat penuh</td><td>Status penuh aktif</td><td>Servo tidak membuka</td><td>Logika tersedia pada program</td><td><span class="sb-result is-code">Verifikasi kode</span></td></tr>
+          </tbody>
+        </table>
       </div>
     </section>
 
-    <section class="test-documentation" aria-labelledby="smart-bin-test-title">
-      <div class="test-documentation-heading">
-        <span>Pengujian Prototype</span>
-        <h2 id="smart-bin-test-title">Tes Telegram dan Serial Monitor</h2>
-        <p>Hasil berikut memperlihatkan notifikasi jarak jauh serta keluaran Serial Monitor saat Smart Bin mendeteksi kondisi penuh dan kembali kosong.</p>
+    <section class="sb-section" id="source-code" aria-labelledby="source-title">
+      <div class="sb-section-heading sb-heading-split">
+        <div>
+          <span>07 / Cuplikan Source Code</span>
+          <h2 id="source-title">Bagian penting dari sketch Telegram.</h2>
+          <p>Cuplikan diambil dari file asli dan seluruh nilai sensitif tetap dikosongkan.</p>
+        </div>
+        <a class="project-link primary" href="https://github.com/sihombingbayu0-hub/portofolio-bayu/blob/main/iot-tempat-sampah/iot_tempat_sampah_telegram/iot_tempat_sampah_telegram.ino" target="_blank" rel="noreferrer">Lihat Kode Lengkap</a>
       </div>
 
-      <div class="test-grid">
-        <article class="test-card">
-          <img src="iot-tempat-sampah/assets/dokumentasi-smart-bin/notifikasi-telegram.jpeg" alt="Notifikasi Telegram Smart Bin saat sistem aktif, penuh, dan kosong">
-          <div>
-            <span>01 / Telegram</span>
-            <h3>Notifikasi status tempat sampah</h3>
-            <p>Bot Telegram mengirim konfirmasi saat sistem aktif, memberi peringatan ketika tempat sampah penuh, lalu mengirim status siap digunakan setelah tempat sampah dikosongkan.</p>
-          </div>
-        </article>
+      <div class="sb-source-list">
+        <details class="sb-source-item" open>
+          <summary><span>01</span><strong>Konfigurasi pin</strong><small>Pemetaan dua HC-SR04, servo, dan DFPlayer</small></summary>
+          <div class="sb-source-body"><button type="button" data-copy-target="code-pins">Salin Kode</button><pre><code id="code-pins">constexpr uint8_t TRIG_ORANG = D7;
+constexpr uint8_t ECHO_ORANG = D5;
+constexpr uint8_t TRIG_SAMPAH = D0;
+constexpr uint8_t ECHO_SAMPAH = D8;
+constexpr uint8_t PIN_SERVO = D6;
+constexpr uint8_t DFPLAYER_RX_ESP = D1;
+constexpr uint8_t DFPLAYER_TX_ESP = D2;</code></pre></div>
+        </details>
 
-        <article class="test-card">
-          <img src="iot-tempat-sampah/assets/dokumentasi-smart-bin/serial-monitor-sampah-penuh.png" alt="Serial Monitor menunjukkan jarak sampah sekitar 2 sentimeter dan status penuh">
-          <div>
-            <span>02 / Serial Monitor</span>
-            <h3>Deteksi tempat sampah penuh</h3>
-            <p>Sensor ultrasonik 2 membaca jarak 2,0–2,3 cm. Karena berada di bawah batas 4 cm secara berulang, sistem menetapkan status penuh dan mengirim pesan Telegram.</p>
-          </div>
-        </article>
+        <details class="sb-source-item">
+          <summary><span>02</span><strong>Pembacaan sensor ultrasonik</strong><small>Menghasilkan jarak valid 2–400 cm</small></summary>
+          <div class="sb-source-body"><button type="button" data-copy-target="code-sensor">Salin Kode</button><pre><code id="code-sensor">float bacaJarakCm(uint8_t trigPin, uint8_t echoPin) {
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
 
-        <article class="test-card">
-          <img src="iot-tempat-sampah/assets/dokumentasi-smart-bin/serial-monitor-sampah-kosong.png" alt="Serial Monitor menunjukkan tempat sampah kembali kosong dan servo terbuka">
-          <div>
-            <span>03 / Serial Monitor</span>
-            <h3>Reset setelah sampah dikosongkan</h3>
-            <p>Setelah jarak ultrasonik 2 kembali jauh, sistem menandai tempat sampah siap digunakan. Sensor ultrasonik 1 lalu mendeteksi objek 7,7 cm dan servo membuka tutup.</p>
-          </div>
-        </article>
+  unsigned long durasi = pulseIn(echoPin, HIGH, 30000UL);
+  if (durasi == 0) return -1.0f;
+
+  float jarak = durasi * 0.0343f / 2.0f;
+  if (jarak &lt; 2.0f || jarak &gt; 400.0f) return -1.0f;
+  return jarak;
+}</code></pre></div>
+        </details>
+
+        <details class="sb-source-item">
+          <summary><span>03</span><strong>Kontrol servo</strong><small>Gerakan perlahan antara posisi buka dan tutup</small></summary>
+          <div class="sb-source-body"><button type="button" data-copy-target="code-servo">Salin Kode</button><pre><code id="code-servo">void gerakkanServoPerlahan(int sudutTujuan) {
+  sudutTujuan = constrain(sudutTujuan, 10, 170);
+
+  if (posisiServo &lt; sudutTujuan) {
+    for (int sudut = posisiServo; sudut &lt;= sudutTujuan; sudut++) {
+      servoTutup.write(sudut);
+      delay(JEDA_GERAK_SERVO_MS);
+      yield();
+    }
+  } else {
+    for (int sudut = posisiServo; sudut &gt;= sudutTujuan; sudut--) {
+      servoTutup.write(sudut);
+      delay(JEDA_GERAK_SERVO_MS);
+      yield();
+    }
+  }
+  posisiServo = sudutTujuan;
+}</code></pre></div>
+        </details>
+
+        <details class="sb-source-item">
+          <summary><span>04</span><strong>Kontrol DFPlayer Mini</strong><small>Memutar file dari folder mp3</small></summary>
+          <div class="sb-source-body"><button type="button" data-copy-target="code-dfplayer">Salin Kode</button><pre><code id="code-dfplayer">void putarSuaraSekarang(uint8_t nomor) {
+  if (!dfPlayerSiap) {
+    Serial.println(F("DFPlayer belum siap."));
+    return;
+  }
+
+  dfPlayer.playMp3Folder(nomor);
+}</code></pre></div>
+        </details>
+
+        <details class="sb-source-item">
+          <summary><span>05</span><strong>Koneksi Wi-Fi</strong><small>Kredensial sengaja dikosongkan</small></summary>
+          <div class="sb-source-body"><button type="button" data-copy-target="code-wifi">Salin Kode</button><pre><code id="code-wifi">const char* WIFI_SSID = "";
+const char* WIFI_PASSWORD = "";
+
+void mulaiWiFi() {
+  if (WiFi.status() == WL_CONNECTED) return;
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+}</code></pre></div>
+        </details>
+
+        <details class="sb-source-item">
+          <summary><span>06</span><strong>Telegram Bot</strong><small>Mengirim pesan hanya ketika Wi-Fi tersambung</small></summary>
+          <div class="sb-source-body"><button type="button" data-copy-target="code-telegram">Salin Kode</button><pre><code id="code-telegram">const char* BOT_TOKEN = "";
+const char* CHAT_ID = "";
+
+bool kirimTelegram(const String&amp; pesan) {
+  if (WiFi.status() != WL_CONNECTED) {
+    Serial.println(F("Telegram belum dikirim: Wi-Fi belum terhubung."));
+    return false;
+  }
+
+  bool terkirim = bot.sendMessage(CHAT_ID, pesan, "");
+  Serial.println(terkirim ? F("Telegram: pesan terkirim.")
+                          : F("Telegram: pesan gagal dikirim."));
+  return terkirim;
+}</code></pre></div>
+        </details>
+
+        <details class="sb-source-item">
+          <summary><span>07</span><strong>Logika tempat sampah penuh</strong><small>Tiga pembacaan di bawah ambang 4 cm</small></summary>
+          <div class="sb-source-body"><button type="button" data-copy-target="code-full">Salin Kode</button><pre><code id="code-full">if (jarakSampah &lt; BATAS_PENUH_CM) {
+  if (hitungPenuh &lt; 3) hitungPenuh++;
+} else {
+  hitungPenuh = 0;
+}
+
+if (hitungPenuh &gt;= 3) {
+  statusPenuh = true;
+  hitungPenuh = 0;
+  peringatanPenuhSudahDiputar = false;
+
+  if (tutupTerbuka || posisiServo != SUDUT_TUTUP) {
+    tutupTerbuka = false;
+    gerakkanServoPerlahan(SUDUT_TUTUP);
+  }
+
+  Serial.println(F("TEMPAT SAMPAH PENUH (&lt;4 cm)."));
+  kirimTelegram(F("tempat sampah penuh, silakan dikosongkan"));
+}</code></pre></div>
+        </details>
+
+        <details class="sb-source-item">
+          <summary><span>08</span><strong>Program utama</strong><small>Pembacaan dua sensor setiap 300 ms</small></summary>
+          <div class="sb-source-body"><button type="button" data-copy-target="code-loop">Salin Kode</button><pre><code id="code-loop">void loop() {
+  unsigned long sekarang = millis();
+  prosesWiFi(sekarang);
+  prosesPerintahSerial();
+
+  if (sekarang - sensorTerakhir &gt;= INTERVAL_SENSOR_MS) {
+    sensorTerakhir = sekarang;
+    jarakOrang = bacaJarakCm(TRIG_ORANG, ECHO_ORANG);
+    delay(40);
+    jarakSampah = bacaJarakCm(TRIG_SAMPAH, ECHO_SAMPAH);
+    prosesKapasitasSampah();
+    prosesSensor(sekarang);
+  }
+}</code></pre></div>
+        </details>
       </div>
     </section>
+
+    <section class="sb-section" aria-labelledby="learning-title">
+      <div class="sb-section-heading">
+        <span>08 / Hasil &amp; Pembelajaran</span>
+        <h2 id="learning-title">Dari prototype menuju sistem yang lebih matang.</h2>
+      </div>
+
+      <div class="sb-learning-grid">
+        <article><span>Hasil Project</span><h3>Prototype terintegrasi</h3><p>Dua sensor, servo, audio, Wi-Fi, dan Telegram bekerja dalam satu alur sistem.</p></article>
+        <article><span>Tantangan</span><h3>Stabilitas pembacaan</h3><p>Dua sensor perlu diberi jeda agar tidak saling mengganggu, sedangkan status penuh perlu divalidasi berulang.</p></article>
+        <article><span>Solusi</span><h3>Jeda dan hysteresis</h3><p>Program memberi jeda 40 ms antarsensor, tiga pembacaan untuk perubahan status, serta batas reset 15 cm.</p></article>
+        <article><span>Hal yang Dipelajari</span><h3>Integrasi perangkat</h3><p>Project memperkuat pemahaman komunikasi serial, aktuator, pengukuran jarak, dan notifikasi jaringan.</p></article>
+        <article><span>Pengembangan Berikutnya</span><h3>Monitoring lebih lengkap</h3><p>Versi berikutnya dapat menampilkan persentase kapasitas, histori data, casing lebih kuat, dan pemilahan sampah.</p></article>
+      </div>
+    </section>
+
+    <footer class="detail-footer sb-footer">
+      <p>Dokumentasi lengkap, sketch Arduino, diagram wiring, dan hasil pengujian tersedia di repository.</p>
+      <div class="detail-actions">
+        <a class="project-link primary" href="https://github.com/sihombingbayu0-hub/portofolio-bayu/tree/main/iot-tempat-sampah" target="_blank" rel="noreferrer">Buka Repository</a>
+        <a class="project-link secondary" href="index.html#projects">Kembali ke Portfolio</a>
+      </div>
+    </footer>
   </main>
+
+  <dialog class="sb-lightbox" aria-labelledby="lightbox-caption">
+    <button class="sb-lightbox-close" type="button" aria-label="Tutup preview gambar">×</button>
+    <img src="" alt="">
+    <p id="lightbox-caption"></p>
+  </dialog>
+
+  <div class="sb-toast" role="status" aria-live="polite"></div>
   <script src="theme.js"></script>
+  <script src="smart-bin-detail.js"></script>
 </body>
 </html>
