@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Detail project Uang Ku Ni Bayu Aditya Sihombing.">
+  <title>Uang Ku Ni - Project Bayu</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <script>
+    (() => {
+      try {
+        if (localStorage.getItem("portfolio-theme") === "dark") {
+          document.documentElement.dataset.theme = "dark";
+        }
+      } catch (error) {}
+    })();
+  </script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="project-detail-page">
+  <header class="detail-header">
+    <a class="detail-brand" href="index.html#projects">BAS</a>
+    <nav aria-label="Navigasi detail project">
+      <button class="theme-toggle" type="button" data-theme-toggle aria-label="Aktifkan mode gelap" aria-pressed="false" title="Mode gelap">
+        <svg class="moon-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5 7 7 0 1 0 20.5 14.5Z"/></svg>
+        <svg class="sun-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="detail-nav-link" href="index.html#projects">Kembali</a>
+      <a class="detail-nav-link primary" href="uang-ku-ni/" target="_blank" rel="noreferrer">Buka Demo</a>
+    </nav>
+  </header>
+
+  <main class="project-detail">
+    <section class="detail-hero">
+      <div class="detail-copy">
+        <span class="detail-kicker">Web App / PWA / Personal Finance</span>
+        <h1>Uang Ku Ni</h1>
+        <p>Uang Ku Ni adalah aplikasi pencatat keuangan pribadi berbasis web/PWA yang dibuat mobile-first agar nyaman digunakan di HP. Aplikasi ini membantu pengguna mencatat pemasukan, pengeluaran, saldo, laporan bulanan, kategori, target tabungan, serta backup data.</p>
+        <div class="detail-actions">
+          <a class="project-link primary" href="uang-ku-ni/" target="_blank" rel="noreferrer">Coba Aplikasi</a>
+          <a class="project-link secondary" href="https://github.com/sihombingbayu0-hub/portofolio-bayu/tree/main/catatan-keuangan-bayu" target="_blank" rel="noreferrer">Source Code</a>
+          <a class="project-link download" href="uang-ku-ni/" target="_blank" rel="noreferrer">Install Aplikasi</a>
+        </div>
+      </div>
+
+      <div class="detail-visual finance-detail-shot">
+        <img src="assets/projects/uang-ku-ni/dashboard.jpeg" alt="Dashboard aplikasi Uang Ku Ni menampilkan saldo dan transaksi terbaru">
+      </div>
+    </section>
+
+    <section class="detail-section-grid">
+      <article class="detail-panel">
+        <h2>Tentang Aplikasi</h2>
+        <p>Project ini dibuat sebagai latihan dan portofolio aplikasi mobile-first. Fokus utamanya adalah tampilan yang terasa seperti aplikasi HP, alur pencatatan sederhana, dan penyimpanan data lokal tanpa backend.</p>
+        <div class="detail-tech">
+          <span>HTML</span>
+          <span>CSS</span>
+          <span>JavaScript</span>
+          <span>localStorage</span>
+          <span>PWA</span>
+          <span>Netlify</span>
+          <span>GitHub</span>
+        </div>
+      </article>
+
+      <div class="detail-card-grid">
+        <article class="detail-card">
+          <span>01</span>
+          <h3>Masalah</h3>
+          <p>Catatan keuangan harian sering tercecer karena masih ditulis manual atau tersimpan di banyak tempat.</p>
+        </article>
+        <article class="detail-card">
+          <span>02</span>
+          <h3>Solusi</h3>
+          <p>Aplikasi menyediakan pencatatan transaksi, ringkasan saldo, laporan bulanan, dan backup data dalam satu tempat.</p>
+        </article>
+        <article class="detail-card">
+          <span>03</span>
+          <h3>Pengalaman HP</h3>
+          <p>Layout dibuat mobile-first, tombol mudah ditekan, dan tampilannya tetap rapi untuk ukuran layar kecil.</p>
+        </article>
+        <article class="detail-card">
+          <span>04</span>
+          <h3>PWA</h3>
+          <p>Aplikasi disiapkan agar bisa di-install dari browser HP dan tetap nyaman dibuka seperti aplikasi biasa.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="detail-panel detail-wide-panel">
+      <h2>Fitur Utama</h2>
+      <ul class="detail-list two-column-list">
+        <li>Catat pemasukan dan pengeluaran.</li>
+        <li>Ringkasan saldo otomatis.</li>
+        <li>Edit dan hapus transaksi.</li>
+        <li>Filter transaksi berdasarkan jenis, kategori, bulan, dan keterangan.</li>
+        <li>Laporan bulanan dan grafik sederhana.</li>
+        <li>Kategori custom.</li>
+        <li>Target tabungan dengan progress bar.</li>
+        <li>Backup dan restore data.</li>
+        <li>Export transaksi ke CSV.</li>
+        <li>Tema terang dan gelap.</li>
+      </ul>
+    </section>
+
+    <section class="detail-section-grid">
+      <article class="detail-panel">
+        <h2>Cara Kerja</h2>
+        <ol class="detail-list">
+          <li>Pengguna mencatat transaksi pemasukan atau pengeluaran.</li>
+          <li>Saldo dan ringkasan keuangan dihitung otomatis.</li>
+          <li>Riwayat dapat dicari dan disaring berdasarkan jenis, kategori, serta bulan.</li>
+          <li>Laporan bulanan dan target tabungan membantu memantau perkembangan uang.</li>
+          <li>Data dapat dicadangkan ke JSON atau diekspor ke CSV.</li>
+        </ol>
+      </article>
+
+      <article class="detail-panel">
+        <h2>Penyimpanan & Privasi</h2>
+        <p>Uang Ku Ni tidak memakai akun atau backend. Transaksi, kategori, target tabungan, dan pilihan tema disimpan di <code>localStorage</code> perangkat. Pengguna tetap memegang kendali atas datanya melalui fitur backup, restore, export, dan reset.</p>
+        <p class="detail-note">Karena data tersimpan di perangkat, backup berkala disarankan sebelum membersihkan data browser atau berpindah HP.</p>
+      </article>
+    </section>
+
+    <section class="detail-panel detail-wide-panel">
+      <h2>Screenshot Aplikasi</h2>
+      <div class="screenshot-grid screenshot-grid-feature">
+        <figure>
+          <img src="assets/projects/uang-ku-ni/dashboard.jpeg" alt="Dashboard Uang Ku Ni" loading="lazy">
+          <figcaption>Dashboard dan saldo</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/projects/uang-ku-ni/transaksi.jpeg" alt="Form pencatatan transaksi Uang Ku Ni" loading="lazy">
+          <figcaption>Catat transaksi</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/projects/uang-ku-ni/riwayat-filter.jpeg" alt="Riwayat dan filter transaksi Uang Ku Ni" loading="lazy">
+          <figcaption>Riwayat dan filter</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/projects/uang-ku-ni/target-tabungan.jpeg" alt="Form target tabungan Uang Ku Ni" loading="lazy">
+          <figcaption>Target Tabungan</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/projects/uang-ku-ni/kategori.jpeg" alt="Kategori custom dan pilihan tema Uang Ku Ni" loading="lazy">
+          <figcaption>Kategori dan tema</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/projects/uang-ku-ni/backup-data.jpeg" alt="Backup data dan daftar kategori Uang Ku Ni" loading="lazy">
+          <figcaption>Backup dan data</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/projects/uang-ku-ni/tentang-aplikasi.jpeg" alt="Informasi tentang aplikasi Uang Ku Ni" loading="lazy">
+          <figcaption>Tentang aplikasi</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="detail-section-grid">
+      <article class="detail-panel">
+        <h2>Link Project</h2>
+        <p>Coba versi web melalui GitHub Pages atau buka aplikasinya dari Chrome HP, lalu tekan <strong>Install Aplikasi</strong> pada menu Atur agar Uang Ku Ni masuk ke layar utama.</p>
+        <div class="detail-actions">
+          <a class="project-link primary" href="uang-ku-ni/" target="_blank" rel="noreferrer">Demo GitHub Pages</a>
+          <a class="project-link secondary" href="https://github.com/sihombingbayu0-hub/portofolio-bayu/tree/main/catatan-keuangan-bayu" target="_blank" rel="noreferrer">GitHub Repository</a>
+          <a class="project-link download" href="uang-ku-ni/" target="_blank" rel="noreferrer">Install dari Browser</a>
+        </div>
+      </article>
+
+      <article class="detail-panel">
+        <h2>Rencana Pengembangan</h2>
+        <ul class="detail-list">
+          <li>Login pengguna.</li>
+          <li>Sinkronisasi cloud.</li>
+          <li>Database online.</li>
+          <li>Notifikasi pengingat transaksi.</li>
+          <li>Statistik keuangan yang lebih lengkap.</li>
+        </ul>
+      </article>
+    </section>
+  </main>
+  <script src="theme.js"></script>
+</body>
+</html>

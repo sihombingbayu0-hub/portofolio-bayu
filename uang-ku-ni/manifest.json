@@ -1,0 +1,25 @@
+{
+  "name": "Uang Ku Ni",
+  "short_name": "UangKuNi",
+  "description": "Aplikasi pencatat keuangan pribadi yang nyaman digunakan di HP",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1E3C2B",
+  "theme_color": "#1E3C2B",
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

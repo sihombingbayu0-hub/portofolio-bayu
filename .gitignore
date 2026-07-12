@@ -1,2 +1,6 @@
 # Local Arduino credentials
 iot-tempat-sampah/**/secrets.h
+
+# Local package caches and temporary UI test folders
+.pnpm-store/
+catatan-keuangan-bayu/.tmp-theme*/
