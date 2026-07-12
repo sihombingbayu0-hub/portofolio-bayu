@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-labelledby="title">
+  <title id="title">Blynk</title>
+  <rect width="96" height="96" rx="22" fill="#0d9fda"/>
+  <path d="M25 20h16v32l14-16h19L57 56l19 20H57L41 59v17H25V20Z" fill="#fff"/>
+  <circle cx="25" cy="20" r="5" fill="#8ee5ff"/>
+</svg>

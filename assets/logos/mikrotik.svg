@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-labelledby="title">
+  <title id="title">MikroTik</title>
+  <rect width="96" height="96" rx="22" fill="#fff1e8"/>
+  <path d="M21 62 33 34l12 28 9-20 9 20 12-28" fill="none" stroke="#f04b23" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M24 72h48" stroke="#454545" stroke-width="4" stroke-linecap="round"/>
+</svg>

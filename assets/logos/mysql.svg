@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-labelledby="title">
+  <title id="title">MySQL</title>
+  <rect width="96" height="96" rx="22" fill="#eaf7fb"/>
+  <path d="M21 63c14-1 20 8 29 8 9 0 14-7 25-7-8 10-18 15-29 15-11 0-19-6-25-16Z" fill="#00758f"/>
+  <path d="M34 28c4-7 16-8 22-2 5 5 4 12 2 17-4-6-8-9-14-9-4 0-7-2-10-6Z" fill="#f29111"/>
+  <path d="M27 28c-3 9-1 18 7 25" fill="none" stroke="#00758f" stroke-width="5" stroke-linecap="round"/>
+</svg>

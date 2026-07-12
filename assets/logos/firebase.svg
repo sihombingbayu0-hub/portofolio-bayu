@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-labelledby="title">
+  <title id="title">Firebase</title>
+  <rect width="96" height="96" rx="22" fill="#fff8ea"/>
+  <path d="m25 73 10-51 14 16 8-19 17 54-25 12-24-12Z" fill="#ffca28"/>
+  <path d="m25 73 19-15 14 15 16-54-17 54-16-13-16 13Z" fill="#f57c00"/>
+  <path d="M44 58 57 19l17 54-30-15Z" fill="#ffa000"/>
+</svg>
