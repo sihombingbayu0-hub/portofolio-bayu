@@ -9,8 +9,8 @@
 // ===================== KONFIGURASI WIFI DAN FIREBASE =====================
 // Ganti nilai di bawah ini dengan data milik kamu sebelum upload ke ESP8266.
 // Karena semua konfigurasi ada di file ini, sketch tidak perlu file tambahan.
-static const char* WIFI_SSID = "NAMA_WIFI";
-static const char* WIFI_PASSWORD = "PASSWORD_WIFI";
+static const char* WIFI_SSID = "";
+static const char* WIFI_PASSWORD = "";
 
 // Contoh URL:
 // https://nama-project-default-rtdb.firebaseio.com

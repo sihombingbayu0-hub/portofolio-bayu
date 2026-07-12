@@ -7,10 +7,10 @@
 
 // Isi dengan kredensial baru sebelum upload.
 // Token lama yang pernah dibagikan sebaiknya di-revoke melalui BotFather.
-const char* WIFI_SSID = "NAMA_WIFI";
-const char* WIFI_PASSWORD = "PASSWORD_WIFI";
-const char* BOT_TOKEN = "TOKEN_BOT_TELEGRAM_BARU";
-const char* CHAT_ID = "CHAT_ID_TELEGRAM";
+const char* WIFI_SSID = "";
+const char* WIFI_PASSWORD = "";
+const char* BOT_TOKEN = "";
+const char* CHAT_ID = "";
 
 // ================================================================
 // PIN NODEMCU ESP8266
