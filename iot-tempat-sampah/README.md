@@ -5,8 +5,10 @@
 - Ultrasonik 1 membuka tutup saat orang berjarak kurang dari 50 cm.
 - DFPlayer memutar suara 1 saat orang datang, suara 2 setelah selesai, dan suara 3 saat penuh.
 - Ultrasonik 2 menyatakan penuh jika jarak sampah sekitar 4 cm.
+- Saat tempat sampah penuh, tutup tidak terbuka otomatis ketika orang datang.
 - ESP8266 mengirim data sensor ke Firebase Realtime Database pada path `smartbin`.
 - Aplikasi HP dapat mengubah `smartbin/tutupTerbuka` untuk membuka atau menutup servo.
+- Saat tempat sampah penuh, tutup tetap bisa dibuka oleh petugas lewat aplikasi HP.
 - Aplikasi HP juga mengirim perintah servo lewat `smartbin/perintahTutup` agar perintah tidak tertimpa data sensor.
 - Aplikasi HP dapat mengubah `smartbin/perintahSuara` menjadi `1`, `2`, atau `3` untuk memutar DFPlayer Mini.
 - Aplikasi HP membaca data Firebase secara realtime untuk menampilkan status tempat sampah.
@@ -130,3 +132,55 @@ Untuk uji coba awal, rules Realtime Database dapat dibuat terbuka sementara:
 ```
 
 Setelah proyek berjalan, rules harus diamankan kembali.
+
+## Dokumentasi Rangkaian dan Demonstrasi
+
+Seluruh aset pendukung proyek disatukan pada folder [`assets/dokumentasi-smart-bin`](assets/dokumentasi-smart-bin). Berikut penjelasan setiap gambar dan video.
+
+### 1. Wiring dua sensor ultrasonik
+
+![Diagram wiring Ultrasonik 1 dan Ultrasonik 2](assets/dokumentasi-smart-bin/ultrasonik-1-dan-2.jpg)
+
+Gambar ini memperlihatkan dua HC-SR04 yang dipakai dengan fungsi berbeda. Ultrasonik 1 membaca keberadaan pengguna di depan tempat sampah melalui TRIG D7 dan ECHO D5. Ultrasonik 2 mengukur jarak permukaan sampah untuk menentukan kondisi penuh melalui TRIG D0 dan ECHO D8. Keduanya berbagi VCC 5 V serta GND dengan NodeMCU.
+
+### 2. DFPlayer Mini dan speaker
+
+![Diagram DFPlayer Mini dan speaker](assets/dokumentasi-smart-bin/dfplayer-mini-dan-speaker.jpg)
+
+Gambar ini menunjukkan sambungan DFPlayer Mini sebagai keluaran audio. Jalur serial dihubungkan silang: TX DFPlayer menuju D2 NodeMCU dan RX DFPlayer menerima sinyal dari D1 melalui resistor 1 kOhm. Speaker terhubung ke SPK1 dan SPK2 agar sistem dapat memutar suara saat pengguna terdeteksi, setelah pembuangan selesai, dan ketika tempat sampah penuh.
+
+### 3. Motor servo pembuka tutup
+
+![Diagram motor servo](assets/dokumentasi-smart-bin/motor-servo.jpg)
+
+Gambar ini menjelaskan servo sebagai aktuator tutup. Kabel sinyal servo terhubung ke D6, sedangkan VCC 5 V dan GND memakai catu daya bersama. Servo bergerak dari posisi tutup ke posisi buka saat sensor pertama mendeteksi objek pada jarak yang ditentukan.
+
+### 4. Notifikasi Telegram
+
+![Tangkapan layar notifikasi Telegram Smart Bin](assets/dokumentasi-smart-bin/notifikasi-telegram.jpeg)
+
+Tangkapan layar ini membuktikan integrasi bot Telegram. Sistem mengirim pesan ketika perangkat aktif, ketika kapasitas tempat sampah penuh dan perlu dikosongkan, serta ketika tempat sampah kembali kosong dan siap digunakan.
+
+### 5. Flowchart sistem
+
+![Flowchart proses Smart Bin](assets/dokumentasi-smart-bin/flowchart-sistem.png)
+
+Flowchart ini menggambarkan alur program: sistem melakukan inisialisasi dan mengecek jaringan, membaca sensor ultrasonik pertama untuk membuka atau menutup servo, lalu membaca sensor kedua untuk mendeteksi kondisi penuh. Saat penuh, servo ditutup dan Telegram mengirimkan notifikasi.
+
+### 6. Video demonstrasi
+
+[▶ Tonton video demonstrasi Smart Bin (MP4, 9 MB)](assets/dokumentasi-smart-bin/demo-smart-bin.mp4)
+
+Video ini mendokumentasikan demonstrasi prototype Smart Bin sebagai pelengkap diagram rangkaian dan flowchart. Video dapat dibuka dari folder dokumentasi setelah repository dibuka di GitHub.
+
+### 7. Pengujian kondisi sampah penuh
+
+![Serial Monitor saat tempat sampah penuh](assets/dokumentasi-smart-bin/serial-monitor-sampah-penuh.png)
+
+Tangkapan layar Serial Monitor ini menunjukkan sensor ultrasonik 2 membaca jarak sampah sekitar 2,0–2,3 cm. Karena jarak tersebut berada di bawah batas penuh 4 cm secara berulang, sistem menetapkan status `Penuh: YA`, menampilkan pesan `TEMPAT SAMPAH PENUH`, mengirim notifikasi Telegram, dan mencatat respons DFPlayer.
+
+### 8. Pengujian setelah sampah dikosongkan
+
+![Serial Monitor saat tempat sampah kosong](assets/dokumentasi-smart-bin/serial-monitor-sampah-kosong.png)
+
+Tangkapan layar ini menunjukkan proses pemulihan setelah isi tempat sampah diangkat. Pembacaan sensor ultrasonik 2 berubah dari jarak dekat menjadi 269,8 cm, 55,7 cm, dan 44,4 cm; setelah beberapa pembacaan melebihi batas reset, sistem menampilkan pesan `Tempat sampah kosong: siap digunakan kembali.` dan mengirim Telegram. Baris berikutnya memperlihatkan sensor ultrasonik 1 mendeteksi objek pada 7,7 cm, sehingga suara `0001.mp3` diputar dan servo membuka tutup.

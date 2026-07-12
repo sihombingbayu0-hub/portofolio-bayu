@@ -9,13 +9,13 @@
 // ===================== KONFIGURASI WIFI DAN FIREBASE =====================
 // Ganti nilai di bawah ini dengan data milik kamu sebelum upload ke ESP8266.
 // Karena semua konfigurasi ada di file ini, sketch tidak perlu file tambahan.
-static const char* WIFI_SSID = "ehe";
-static const char* WIFI_PASSWORD = "pesandulu";
+static const char* WIFI_SSID = "NAMA_WIFI";
+static const char* WIFI_PASSWORD = "PASSWORD_WIFI";
 
 // Contoh URL:
 // https://nama-project-default-rtdb.firebaseio.com
 // https://nama-project-default-rtdb.asia-southeast1.firebasedatabase.app
-static const char* FIREBASE_DATABASE_URL = "https://smart-bin-monitor-6f0e1-default-rtdb.firebaseio.com";
+static const char* FIREBASE_DATABASE_URL = "https://PROJECT_ID-default-rtdb.firebaseio.com";
 
 // Kosongkan jika rules Firebase masih terbuka untuk uji coba.
 // Jika memakai token/database secret, isi token di sini.
@@ -67,6 +67,7 @@ bool tutupTerbuka = false;
 bool suaraAktif = true;
 bool siklusBuangAktif = false;
 bool statusPenuh = false;
+bool bukaOtomatisDiblokirSaatPenuh = false;
 bool wifiSebelumnyaTerhubung = false;
 bool suaraPernahDiputar = false;
 bool firebaseTutupPernahDibaca = false;
@@ -403,8 +404,21 @@ void prosesStatusWiFi(unsigned long sekarang) {
 
 void prosesSensorOrang(unsigned long sekarang) {
   bool adaOrang = jarakOrang > 0 && jarakOrang < BATAS_ORANG_CM;
+  bool tempatSampahPenuh = statusPenuh || kapasitasPersen >= 80;
 
   if (adaOrang) {
+    if (tempatSampahPenuh) {
+      terakhirOrangTerlihat = sekarang;
+
+      if (!bukaOtomatisDiblokirSaatPenuh) {
+        bukaOtomatisDiblokirSaatPenuh = true;
+        Serial.println("Tempat sampah penuh, buka otomatis dinonaktifkan. Gunakan aplikasi.");
+      }
+
+      return;
+    }
+
+    bukaOtomatisDiblokirSaatPenuh = false;
     terakhirOrangTerlihat = sekarang;
     if (!siklusBuangAktif) {
       siklusBuangAktif = true;
@@ -416,6 +430,8 @@ void prosesSensorOrang(unsigned long sekarang) {
     }
     return;
   }
+
+  bukaOtomatisDiblokirSaatPenuh = false;
 
   if (siklusBuangAktif &&
       sekarang - terakhirOrangTerlihat >= JEDA_TUTUP_MS) {

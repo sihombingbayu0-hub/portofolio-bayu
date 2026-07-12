@@ -38,6 +38,7 @@
         <p>Prototype tempat sampah otomatis yang membaca objek di depan tutup, memantau kapasitas sampah, memberi respons suara, dan mengirim notifikasi ketika tempat sampah penuh.</p>
         <div class="detail-actions">
           <a class="project-link primary" href="https://github.com/sihombingbayu0-hub/portofolio-bayu/tree/main/iot-tempat-sampah" target="_blank" rel="noreferrer">Buka GitHub</a>
+          <a class="project-link secondary" href="https://github.com/sihombingbayu0-hub/portofolio-bayu/tree/main/iot-tempat-sampah/assets/dokumentasi-smart-bin" target="_blank" rel="noreferrer">Dokumentasi &amp; Video</a>
           <a class="project-link secondary" href="index.html#projects">Lihat Project Lain</a>
         </div>
       </div>
@@ -87,6 +88,43 @@
           <span>04</span>
           <h3>Hasil</h3>
           <p>Prototype berjalan lokal dan dokumentasinya siap dibaca ulang melalui repository GitHub.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="test-documentation" aria-labelledby="smart-bin-test-title">
+      <div class="test-documentation-heading">
+        <span>Pengujian Prototype</span>
+        <h2 id="smart-bin-test-title">Tes Telegram dan Serial Monitor</h2>
+        <p>Hasil berikut memperlihatkan notifikasi jarak jauh serta keluaran Serial Monitor saat Smart Bin mendeteksi kondisi penuh dan kembali kosong.</p>
+      </div>
+
+      <div class="test-grid">
+        <article class="test-card">
+          <img src="iot-tempat-sampah/assets/dokumentasi-smart-bin/notifikasi-telegram.jpeg" alt="Notifikasi Telegram Smart Bin saat sistem aktif, penuh, dan kosong">
+          <div>
+            <span>01 / Telegram</span>
+            <h3>Notifikasi status tempat sampah</h3>
+            <p>Bot Telegram mengirim konfirmasi saat sistem aktif, memberi peringatan ketika tempat sampah penuh, lalu mengirim status siap digunakan setelah tempat sampah dikosongkan.</p>
+          </div>
+        </article>
+
+        <article class="test-card">
+          <img src="iot-tempat-sampah/assets/dokumentasi-smart-bin/serial-monitor-sampah-penuh.png" alt="Serial Monitor menunjukkan jarak sampah sekitar 2 sentimeter dan status penuh">
+          <div>
+            <span>02 / Serial Monitor</span>
+            <h3>Deteksi tempat sampah penuh</h3>
+            <p>Sensor ultrasonik 2 membaca jarak 2,0–2,3 cm. Karena berada di bawah batas 4 cm secara berulang, sistem menetapkan status penuh dan mengirim pesan Telegram.</p>
+          </div>
+        </article>
+
+        <article class="test-card">
+          <img src="iot-tempat-sampah/assets/dokumentasi-smart-bin/serial-monitor-sampah-kosong.png" alt="Serial Monitor menunjukkan tempat sampah kembali kosong dan servo terbuka">
+          <div>
+            <span>03 / Serial Monitor</span>
+            <h3>Reset setelah sampah dikosongkan</h3>
+            <p>Setelah jarak ultrasonik 2 kembali jauh, sistem menandai tempat sampah siap digunakan. Sensor ultrasonik 1 lalu mendeteksi objek 7,7 cm dan servo membuka tutup.</p>
+          </div>
         </article>
       </div>
     </section>
